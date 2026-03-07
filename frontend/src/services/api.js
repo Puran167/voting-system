@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: 'http://localhost:5000/api' });
+const API = axios.create({ baseURL: 'https://voting-system-backend-b9y7.onrender.com' });
 
 // Attach JWT token to every request if available
 API.interceptors.request.use((config) => {
