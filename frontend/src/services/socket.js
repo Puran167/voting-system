@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
 // Single shared socket connection to the backend
-const socket = io('http://localhost:5000', {
+const socket = io('https://voting-system-backend-b9y7.onrender.com', {
   autoConnect: true,
   reconnection: true,
   reconnectionAttempts: 5,
