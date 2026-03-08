@@ -4,30 +4,31 @@ const User = require("../models/User");
 
 
 // ======================
-// CREATE TRANSPORTER
+// CREATE EMAIL TRANSPORTER
 // ======================
-const createTransporter = async () => {
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
+  // Force IPv4 (fix ENETUNREACH error on Render)
+  family: 4,
 
-    // Force IPv4 (fixes ENETUNREACH error on Render)
-    family: 4,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
-  });
 
-  // Verify SMTP connection
-  await transporter.verify();
-  console.log("SMTP server ready");
-
-  return transporter;
-};
+// Verify SMTP connection once at startup
+transporter.verify((error) => {
+  if (error) {
+    console.error("SMTP connection error:", error);
+  } else {
+    console.log("SMTP server ready to send emails");
+  }
+});
 
 
 // ======================
@@ -60,8 +61,6 @@ exports.sendOtp = async (req, res) => {
 
     await user.save();
 
-    const transporter = await createTransporter();
-
     console.log("Sending OTP to:", user.email);
 
     await transporter.sendMail({
@@ -79,7 +78,7 @@ exports.sendOtp = async (req, res) => {
       `
     });
 
-    console.log("OTP email sent");
+    console.log("OTP email sent successfully");
 
     res.json({
       message: "OTP sent successfully"
@@ -95,6 +94,7 @@ exports.sendOtp = async (req, res) => {
     });
   }
 };
+
 
 
 // ======================
