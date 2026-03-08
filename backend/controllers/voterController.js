@@ -3,20 +3,26 @@ const nodemailer = require("nodemailer");
 const User = require("../models/User");
 
 
-// Create transporter
+// ======================
+// CREATE TRANSPORTER
+// ======================
 const createTransporter = async () => {
 
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
     secure: false,
+
+    // Force IPv4 (fixes ENETUNREACH error on Render)
+    family: 4,
+
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS
     }
   });
 
-  // Verify connection for debugging
+  // Verify SMTP connection
   await transporter.verify();
   console.log("SMTP server ready");
 
@@ -24,7 +30,9 @@ const createTransporter = async () => {
 };
 
 
-// Generate OTP
+// ======================
+// GENERATE OTP
+// ======================
 const generateOTP = () => {
   return crypto.randomInt(100000, 999999).toString();
 };
@@ -89,7 +97,6 @@ exports.sendOtp = async (req, res) => {
 };
 
 
-
 // ======================
 // VERIFY OTP
 // ======================
@@ -117,6 +124,7 @@ exports.verifyOtp = async (req, res) => {
 
       user.otp = null;
       user.otpExpiry = null;
+
       await user.save();
 
       return res.status(400).json({ message: "OTP expired" });
