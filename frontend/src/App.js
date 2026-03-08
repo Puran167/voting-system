@@ -25,6 +25,10 @@ import VotingTimeSettings from './pages/admin/VotingTimeSettings';
 import ResultsDashboard from './pages/admin/ResultsDashboard';
 import ActivityLogs from './pages/admin/ActivityLogs';
 import VoteMap from './pages/admin/VoteMap';
+import ManageNotices from './pages/admin/ManageNotices';
+
+// Voter pages (additional)
+import Notices from './pages/voter/Notices';
 
 // Public pages
 import VerifyVote from './pages/VerifyVote';
@@ -58,6 +62,7 @@ function App() {
             <Route path="/voter/capture-photo" element={<DashboardRoute role="voter"><PhotoCapturePage /></DashboardRoute>} />
             <Route path="/voter/vote" element={<DashboardRoute role="voter"><VotingPage /></DashboardRoute>} />
             <Route path="/voter/success" element={<DashboardRoute role="voter"><VoteSuccess /></DashboardRoute>} />
+            <Route path="/voter/notices" element={<DashboardRoute role="voter"><Notices /></DashboardRoute>} />
 
             {/* Admin routes (with dashboard layout) */}
             <Route path="/admin" element={<DashboardRoute role="admin"><AdminDashboard /></DashboardRoute>} />
@@ -67,6 +72,7 @@ function App() {
             <Route path="/admin/results" element={<DashboardRoute role="admin"><ResultsDashboard /></DashboardRoute>} />
             <Route path="/admin/logs" element={<DashboardRoute role="admin"><ActivityLogs /></DashboardRoute>} />
             <Route path="/admin/vote-map" element={<DashboardRoute role="admin"><VoteMap /></DashboardRoute>} />
+            <Route path="/admin/notices" element={<DashboardRoute role="admin"><ManageNotices /></DashboardRoute>} />
 
             {/* Catch all */}
             <Route path="*" element={<Navigate to="/" />} />

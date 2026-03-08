@@ -92,4 +92,15 @@ export const verifyVoteById = (id) => API.get(`/voting/verify/${encodeURICompone
 export const getLocationStats = () => API.get("/voting/location-stats");
 
 
+// =======================
+// NOTICES
+// =======================
+
+export const getNotices = () => API.get("/notices");
+
+export const createNotice = (data) => API.post("/notices", data);
+
+export const deleteNotice = (id) => API.delete(`/notices/${id}`);
+
+
 export default API;

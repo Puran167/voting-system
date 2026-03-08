@@ -16,6 +16,7 @@ const Sidebar = ({ open, onClose }) => {
     { to: '/admin/results', icon: '📈', label: t('nav.results') },
     { to: '/admin/logs', icon: '📋', label: t('nav.activityLogs') },
     { to: '/admin/vote-map', icon: '🗺️', label: t('nav.voteMap') },
+    { to: '/admin/notices', icon: '📢', label: t('nav.notices') || 'Notices' },
   ];
 
   const voterLinks = [
@@ -24,6 +25,7 @@ const Sidebar = ({ open, onClose }) => {
     { to: '/voter/capture-photo', icon: '📸', label: t('nav.capturePhoto') || 'Capture Photo' },
     { to: '/voter/vote', icon: '🗳️', label: t('nav.castVote') },
     { to: '/verify-vote', icon: '🔍', label: t('nav.verifyVote') },
+    { to: '/voter/notices', icon: '📢', label: t('nav.notices') || 'Notices' },
   ];
 
   const links = user?.role === 'admin' ? adminLinks : voterLinks;
