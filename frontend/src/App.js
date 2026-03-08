@@ -26,6 +26,7 @@ import ResultsDashboard from './pages/admin/ResultsDashboard';
 import ActivityLogs from './pages/admin/ActivityLogs';
 import VoteMap from './pages/admin/VoteMap';
 import ManageNotices from './pages/admin/ManageNotices';
+import ProfilePage from './pages/ProfilePage';
 
 // Voter pages (additional)
 import Notices from './pages/voter/Notices';
@@ -63,6 +64,9 @@ function App() {
             <Route path="/voter/vote" element={<DashboardRoute role="voter"><VotingPage /></DashboardRoute>} />
             <Route path="/voter/success" element={<DashboardRoute role="voter"><VoteSuccess /></DashboardRoute>} />
             <Route path="/voter/notices" element={<DashboardRoute role="voter"><Notices /></DashboardRoute>} />
+
+            {/* Profile route (both roles) */}
+            <Route path="/profile" element={<ProtectedRoute><DashboardLayout><ProfilePage /></DashboardLayout></ProtectedRoute>} />
 
             {/* Admin routes (with dashboard layout) */}
             <Route path="/admin" element={<DashboardRoute role="admin"><AdminDashboard /></DashboardRoute>} />

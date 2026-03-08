@@ -299,6 +299,9 @@
     "voterId": "Voter ID",
     "fingerprintId": "Fingerprint ID",
     "createdAt": "Account Created",
+    "fullName": "Full Name",
+    "role": "Role",
+    "goBack": "Go Back",
     "close": "Close"
   }
 }
