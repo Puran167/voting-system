@@ -289,5 +289,16 @@
     "subtitle": "Stay updated with the latest election information",
     "manage": "Manage Notices",
     "manageDesc": "Create and manage election announcements"
+  },
+  "profile": {
+    "title": "User Profile",
+    "subtitle": "Your account information",
+    "viewProfile": "Profile",
+    "votingHistory": "Voting History",
+    "email": "Email",
+    "voterId": "Voter ID",
+    "fingerprintId": "Fingerprint ID",
+    "createdAt": "Account Created",
+    "close": "Close"
   }
 }
