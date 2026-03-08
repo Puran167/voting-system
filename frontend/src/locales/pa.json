@@ -57,7 +57,10 @@
     "activityLogs": "ਗਤੀਵਿਧੀ ਲੌਗ",
     "verifyIdentity": "ਪਛਾਣ ਤਸਦੀਕ ਕਰੋ",
     "verifyOtp": "OTP ਤਸਦੀਕ",
-    "castVote": "ਵੋਟ ਪਾਓ"
+    "capturePhoto": "ਫੋਟੋ ਖਿੱਚੋ",
+    "castVote": "ਵੋਟ ਪਾਓ",
+    "verifyVote": "ਵੋਟ ਤਸਦੀਕ ਕਰੋ",
+    "voteMap": "ਵੋਟ ਨਕਸ਼ਾ"
   },
   "login": {
     "welcomeBack": "ਵਾਪਸੀ 'ਤੇ ਸੁਆਗਤ ਹੈ",
@@ -81,6 +84,10 @@
     "fingerprintVerification": "ਫਿੰਗਰਪ੍ਰਿੰਟ ਤਸਦੀਕ",
     "verifyIdentity": "ਵੋਟ ਪਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਆਪਣੀ ਪਛਾਣ ਤਸਦੀਕ ਕਰੋ",
     "verifyNow": "ਹੁਣੇ ਤਸਦੀਕ ਕਰੋ",
+    "otpVerification": "OTP ਤਸਦੀਕ",
+    "otpDesc": "ਇੱਕ-ਵਾਰ ਪਾਸਵਰਡ ਨਾਲ ਆਪਣੀ ਈਮੇਲ ਤਸਦੀਕ ਕਰੋ",
+    "photoCapture": "ਫੋਟੋ ਖਿੱਚੋ",
+    "photoDesc": "ਪਛਾਣ ਦੇ ਸਬੂਤ ਵਜੋਂ ਆਪਣੀ ਫੋਟੋ ਖਿੱਚੋ",
     "castYourVote": "ਆਪਣੀ ਵੋਟ ਪਾਓ",
     "selectAndSubmit": "ਇੱਕ ਉਮੀਦਵਾਰ ਚੁਣੋ ਅਤੇ ਆਪਣੀ ਵੋਟ ਪਾਓ",
     "voteNow": "ਹੁਣੇ ਵੋਟ ਪਾਓ",
@@ -247,5 +254,33 @@
     "resendIn": "ਦੁਬਾਰਾ ਭੇਜੋ",
     "sending": "ਭੇਜ ਰਿਹਾ ਹੈ...",
     "expiresIn": "OTP 5 ਮਿੰਟਾਂ ਵਿੱਚ ਖ਼ਤਮ ਹੋ ਜਾਵੇਗਾ"
+  },
+  "verify": {
+    "title": "ਆਪਣੀ ਵੋਟ ਤਸਦੀਕ ਕਰੋ",
+    "subtitle": "ਆਪਣੀ ਤਸਦੀਕ ਆਈਡੀ ਦਰਜ ਕਰੋ ਜਾਂ ਆਪਣੀ ਰਸੀਦ 'ਤੇ QR ਕੋਡ ਸਕੈਨ ਕਰੋ",
+    "inputLabel": "ਤਸਦੀਕ ਆਈਡੀ",
+    "verifyBtn": "ਤਸਦੀਕ ਕਰੋ",
+    "verifying": "ਤਸਦੀਕ ਹੋ ਰਹੀ ਹੈ...",
+    "valid": "ਵੋਟ ਤਸਦੀਕ ਹੋਈ!",
+    "idLabel": "ਤਸਦੀਕ ਆਈਡੀ",
+    "timestamp": "ਸਮਾਂ",
+    "error": "ਤਸਦੀਕ ਅਸਫ਼ਲ। ਕਿਰਪਾ ਕਰਕੇ ਆਈਡੀ ਜਾਂਚੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+    "backHome": "ਘਰ ਵਾਪਸ ਜਾਓ"
+  },
+  "voteMap": {
+    "title": "ਵੋਟ ਟਿਕਾਣਾ ਨਕਸ਼ਾ",
+    "subtitle": "ਵੋਟਾਂ ਦੀ ਭੂਗੋਲਿਕ ਵੰਡ",
+    "loading": "ਟਿਕਾਣਾ ਅੰਕੜੇ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",
+    "totalVotes": "ਕੁੱਲ ਵੋਟਾਂ",
+    "uniqueLocations": "ਵਿਲੱਖਣ ਟਿਕਾਣੇ",
+    "topLocation": "ਸਿਖਰਲਾ ਟਿਕਾਣਾ",
+    "chartTitle": "ਟਿਕਾਣੇ ਅਨੁਸਾਰ ਵੋਟਾਂ",
+    "votes": "ਵੋਟਾਂ",
+    "noData": "ਅਜੇ ਕੋਈ ਟਿਕਾਣਾ ਡੇਟਾ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।",
+    "breakdown": "ਟਿਕਾਣਾ ਵੇਰਵਾ",
+    "location": "ਟਿਕਾਣਾ",
+    "voteCount": "ਵੋਟ ਗਿਣਤੀ",
+    "percentage": "ਪ੍ਰਤੀਸ਼ਤ",
+    "unknown": "ਅਣਜਾਣ"
   }
 }

@@ -57,7 +57,10 @@
     "activityLogs": "Activity Logs",
     "verifyIdentity": "Verify Identity",
     "verifyOtp": "OTP Verification",
-    "castVote": "Cast Vote"
+    "capturePhoto": "Capture Photo",
+    "castVote": "Cast Vote",
+    "verifyVote": "Verify Vote",
+    "voteMap": "Vote Map"
   },
   "login": {
     "welcomeBack": "Welcome back",
@@ -81,6 +84,10 @@
     "fingerprintVerification": "Fingerprint Verification",
     "verifyIdentity": "Verify your identity before voting",
     "verifyNow": "Verify Now",
+    "otpVerification": "OTP Verification",
+    "otpDesc": "Verify your email with a one-time password",
+    "photoCapture": "Photo Capture",
+    "photoDesc": "Capture your photo as proof of identity",
     "castYourVote": "Cast Your Vote",
     "selectAndSubmit": "Select a candidate and submit your vote",
     "voteNow": "Vote Now",
@@ -247,5 +254,33 @@
     "resendIn": "Resend in",
     "sending": "Sending...",
     "expiresIn": "OTP expires in 5 minutes"
+  },
+  "verify": {
+    "title": "Verify Your Vote",
+    "subtitle": "Enter your verification ID or scan the QR code on your receipt",
+    "inputLabel": "Verification ID",
+    "verifyBtn": "Verify",
+    "verifying": "Verifying...",
+    "valid": "Vote Verified!",
+    "idLabel": "Verification ID",
+    "timestamp": "Timestamp",
+    "error": "Verification failed. Please check the ID and try again.",
+    "backHome": "Back to Home"
+  },
+  "voteMap": {
+    "title": "Vote Location Map",
+    "subtitle": "Geographic distribution of votes",
+    "loading": "Loading location stats...",
+    "totalVotes": "Total Votes",
+    "uniqueLocations": "Unique Locations",
+    "topLocation": "Top Location",
+    "chartTitle": "Votes by Location",
+    "votes": "Votes",
+    "noData": "No location data available yet.",
+    "breakdown": "Location Breakdown",
+    "location": "Location",
+    "voteCount": "Vote Count",
+    "percentage": "Percentage",
+    "unknown": "Unknown"
   }
 }

@@ -24,6 +24,10 @@ const voteLogSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  location: {
+    type: String,
+    default: ''
+  },
   verificationId: {
     type: String,
     unique: true
@@ -34,12 +38,11 @@ const voteLogSchema = new mongoose.Schema({
   }
 });
 
-// Generate a unique verification ID before saving: VR-YYYY-XXXX
+// Generate a unique verification ID before saving: VOTE-XXXXX
 voteLogSchema.pre('save', function (next) {
   if (!this.verificationId) {
-    const year = new Date().getFullYear();
-    const hex = crypto.randomBytes(2).toString('hex').toUpperCase();
-    this.verificationId = `VR-${year}-${hex}`;
+    const hex = crypto.randomBytes(3).toString('hex').toUpperCase().slice(0, 5);
+    this.verificationId = `VOTE-${hex}`;
   }
   next();
 });

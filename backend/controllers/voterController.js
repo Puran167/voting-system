@@ -60,6 +60,12 @@ exports.verifyFingerprint = async (req, res) => {
       return res.status(400).json({ message: 'Fingerprint ID is required.' });
     }
 
+    // Check if OTP was verified first
+    const currentUser = await User.findById(req.user._id);
+    if (!currentUser.otpVerified) {
+      return res.status(400).json({ message: 'OTP email verification is required before fingerprint verification.' });
+    }
+
     // Check if fingerprint belongs to the logged-in user
     const user = await User.findOne({ _id: req.user._id, fingerprintId });
     if (!user) {

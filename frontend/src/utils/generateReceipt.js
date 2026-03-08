@@ -1,15 +1,8 @@
 import { jsPDF } from 'jspdf';
+import QRCode from 'qrcode';
 
 /**
- * Generates a professional PDF voting receipt and triggers a download.
- *
- * How it works:
- * 1. Creates a new A4-sized PDF document using jsPDF.
- * 2. Draws a styled header with the system name and title.
- * 3. Adds voter information and vote details in organized sections.
- * 4. Renders the unique verification ID prominently.
- * 5. Appends a thank-you message and footer.
- * 6. Triggers automatic browser download of the generated PDF.
+ * Generates a professional PDF voting receipt with QR code and triggers a download.
  *
  * @param {Object} receipt - The receipt data returned from the backend
  * @param {string} receipt.voterId - The voter's ID
@@ -17,9 +10,17 @@ import { jsPDF } from 'jspdf';
  * @param {string} receipt.candidateName - Name of the voted candidate
  * @param {string} receipt.partyName - Party of the voted candidate
  * @param {string} receipt.timestamp - ISO timestamp of the vote
- * @param {string} receipt.verificationId - Unique verification code (VR-YYYY-XXXX)
+ * @param {string} receipt.verificationId - Unique verification code (VOTE-XXXXX)
  */
-const generateReceipt = (receipt) => {
+const generateReceipt = async (receipt) => {
+  // Generate QR code data URL
+  const qrData = JSON.stringify({
+    verificationId: receipt.verificationId,
+    voterId: receipt.voterId,
+    timestamp: receipt.timestamp
+  });
+  const qrDataUrl = await QRCode.toDataURL(qrData, { width: 200, margin: 1 });
+
   // Create a new PDF document (A4 portrait, mm units)
   const doc = new jsPDF('p', 'mm', 'a4');
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -152,8 +153,19 @@ const generateReceipt = (receipt) => {
   doc.setFont('helvetica', 'bold');
   doc.text(receipt.verificationId || 'N/A', pageWidth / 2, y + 16, { align: 'center' });
 
+  // ─── QR Code ───
+  y = 204;
+  const qrSize = 36;
+  const qrX = (pageWidth - qrSize) / 2;
+  doc.addImage(qrDataUrl, 'PNG', qrX, y, qrSize, qrSize);
+
+  doc.setFontSize(7);
+  doc.setTextColor(...mutedColor);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Scan to verify your vote', pageWidth / 2, y + qrSize + 5, { align: 'center' });
+
   // ─── Thank you message ───
-  y = 212;
+  y = 252;
   centeredText('Thank you for participating in the democratic process!', y, 10, darkColor, 'bold');
   centeredText(
     'Your vote has been recorded securely and cannot be altered.',
@@ -170,10 +182,10 @@ const generateReceipt = (receipt) => {
   centeredText('to confirm your vote was counted.', y + 22, 8, mutedColor);
 
   // ─── Footer line ───
-  y = 248;
+  y = 282;
   drawLine(y, primaryColor);
-  centeredText('Smart Biometric Voting System', y + 7, 8, primaryColor, 'bold');
-  centeredText('This is a computer-generated receipt and does not require a signature.', y + 14, 7, mutedColor);
+  centeredText('Smart Biometric Voting System', y + 5, 8, primaryColor, 'bold');
+  centeredText('This is a computer-generated receipt and does not require a signature.', y + 11, 7, mutedColor);
 
   // ─── Trigger download with meaningful filename ───
   const safeId = (receipt.verificationId || 'receipt').replace(/[^a-zA-Z0-9-]/g, '');

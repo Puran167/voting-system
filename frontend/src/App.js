@@ -25,6 +25,10 @@ import ManageCandidates from './pages/admin/ManageCandidates';
 import VotingTimeSettings from './pages/admin/VotingTimeSettings';
 import ResultsDashboard from './pages/admin/ResultsDashboard';
 import ActivityLogs from './pages/admin/ActivityLogs';
+import VoteMap from './pages/admin/VoteMap';
+
+// Public pages
+import VerifyVote from './pages/VerifyVote';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -47,6 +51,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/verify-vote" element={<VerifyVote />} />
 
             {/* Voter routes (with dashboard layout) */}
             <Route path="/voter" element={<DashboardRoute role="voter"><VoterDashboard /></DashboardRoute>} />
@@ -63,6 +68,7 @@ function App() {
             <Route path="/admin/voting-time" element={<DashboardRoute role="admin"><VotingTimeSettings /></DashboardRoute>} />
             <Route path="/admin/results" element={<DashboardRoute role="admin"><ResultsDashboard /></DashboardRoute>} />
             <Route path="/admin/logs" element={<DashboardRoute role="admin"><ActivityLogs /></DashboardRoute>} />
+            <Route path="/admin/vote-map" element={<DashboardRoute role="admin"><VoteMap /></DashboardRoute>} />
 
             {/* Catch all */}
             <Route path="*" element={<Navigate to="/" />} />

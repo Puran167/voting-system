@@ -8,13 +8,18 @@ const path = require('path');
 // Cast a vote
 exports.castVote = async (req, res) => {
   try {
-    const { candidateId } = req.body;
+    const { candidateId, location } = req.body;
     const userId = req.user._id;
 
     // Check if user has already voted
     const user = await User.findById(userId);
     if (user.hasVoted) {
       return res.status(400).json({ message: 'You have already voted.' });
+    }
+
+    // Check if OTP was verified before voting
+    if (!user.otpVerified) {
+      return res.status(400).json({ message: 'OTP email verification is required before voting.' });
     }
 
     // Check if fingerprint was verified before voting
@@ -43,13 +48,14 @@ exports.castVote = async (req, res) => {
     user.hasVoted = true;
     await user.save();
 
-    // Create vote log entry with captured photo
+    // Create vote log entry with captured photo and location
     const voteLog = new VoteLog({
       voterId: userId,
       candidateId,
       candidateName: candidate.name,
       partyName: candidate.party,
       photo: user.capturedPhoto,
+      location: location || '',
       timestamp: new Date()
     });
     await voteLog.save();
@@ -88,6 +94,11 @@ exports.capturePhoto = async (req, res) => {
     }
 
     const user = await User.findById(userId);
+
+    // Must have OTP verified first
+    if (!user.otpVerified) {
+      return res.status(400).json({ message: 'OTP email verification is required before photo capture.' });
+    }
 
     // Must have fingerprint verified first
     if (!user.fingerprintVerified) {
@@ -210,6 +221,24 @@ exports.getVotingReceipt = async (req, res) => {
   }
 };
 
+// Get voter verification status (which steps are completed)
+exports.getVoterStatus = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('otpVerified fingerprintVerified capturedPhoto hasVoted');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    res.json({
+      otpVerified: !!user.otpVerified,
+      fingerprintVerified: !!user.fingerprintVerified,
+      photoCaptured: !!user.capturedPhoto,
+      hasVoted: !!user.hasVoted
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.', error: error.message });
+  }
+};
+
 // Get all vote logs (admin only)
 exports.getVoteLogs = async (req, res) => {
   try {
@@ -218,6 +247,57 @@ exports.getVoteLogs = async (req, res) => {
       .populate('candidateId', 'name party')
       .sort({ timestamp: -1 });
     res.json(logs);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.', error: error.message });
+  }
+};
+
+// Verify a vote by verification ID (public — does NOT reveal candidate)
+exports.verifyVote = async (req, res) => {
+  try {
+    const { verificationId } = req.params;
+    if (!verificationId) {
+      return res.status(400).json({ message: 'Verification ID is required.' });
+    }
+
+    // Try exact match first, then case-insensitive regex to handle missing dashes
+    let voteLog = await VoteLog.findOne({ verificationId });
+    if (!voteLog) {
+      // Normalize: strip dashes/spaces and search case-insensitively
+      const normalized = verificationId.replace(/[-\s]/g, '').toUpperCase();
+      const allLogs = await VoteLog.find({});
+      voteLog = allLogs.find(
+        (log) => log.verificationId.replace(/[-\s]/g, '').toUpperCase() === normalized
+      );
+    }
+    if (!voteLog) {
+      return res.status(404).json({ message: 'No vote found with this verification ID.', status: 'invalid' });
+    }
+
+    res.json({
+      status: 'valid',
+      verificationId: voteLog.verificationId,
+      timestamp: voteLog.timestamp,
+      message: 'This vote has been verified and recorded in the system.'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.', error: error.message });
+  }
+};
+
+// Get vote counts by location (admin only)
+exports.getLocationStats = async (req, res) => {
+  try {
+    const stats = await VoteLog.aggregate([
+      { $match: { location: { $ne: '' } } },
+      { $group: { _id: '$location', count: { $sum: 1 } } },
+      { $sort: { count: -1 } }
+    ]);
+
+    const locationMap = {};
+    stats.forEach((s) => { locationMap[s._id] = s.count; });
+
+    res.json(locationMap);
   } catch (error) {
     res.status(500).json({ message: 'Server error.', error: error.message });
   }

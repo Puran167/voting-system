@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { sendOtp, verifyOtp } from '../../services/api';
+import StepProgress from '../../components/StepProgress';
 
 const OtpVerification = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -97,6 +98,7 @@ const OtpVerification = () => {
 
   return (
     <div className="max-w-md mx-auto space-y-6">
+      <StepProgress currentStep="otp" completedSteps={{}} />
       <div className="text-center">
         <div className="w-16 h-16 mx-auto rounded-2xl bg-primary-50 dark:bg-primary-500/10 flex items-center justify-center text-3xl mb-4">📧</div>
         <h1 className="text-2xl font-bold text-surface-900 dark:text-white">{t('otp.title')}</h1>

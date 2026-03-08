@@ -72,6 +72,8 @@ export const capturePhoto = (data) => API.post("/voting/capture-photo", data);
 
 export const getVotingStatus = () => API.get("/voting/status");
 
+export const getVoterStatus = () => API.get("/voting/voter-status");
+
 export const setVotingTime = (data) => API.post("/voting/settings", data);
 
 export const getVotingSettings = () => API.get("/voting/settings");
@@ -82,7 +84,14 @@ export const getVotingReceipt = () => API.get("/voting/receipt");
 
 
 // =======================
-// OTP
+// VERIFICATION & LOCATION
+// =======================
+
+export const verifyVoteById = (id) => API.get(`/voting/verify/${encodeURIComponent(id)}`);
+
+export const getLocationStats = () => API.get("/voting/location-stats");
+
+
 // =======================
 
 export const sendOtp = () => API.post("/otp/send");

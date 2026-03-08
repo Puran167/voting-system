@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { capturePhoto } from '../../services/api';
+import { capturePhoto, getVoterStatus } from '../../services/api';
 import CameraCapture from '../../components/CameraCapture';
+import StepProgress from '../../components/StepProgress';
 
 const PhotoCapturePage = () => {
   const [message, setMessage] = useState('');
@@ -10,6 +11,21 @@ const PhotoCapturePage = () => {
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // Enforce step: fingerprint must be verified first
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const res = await getVoterStatus();
+        if (!res.data.otpVerified) {
+          navigate('/voter/verify-otp', { replace: true });
+        } else if (!res.data.fingerprintVerified) {
+          navigate('/voter/verify', { replace: true });
+        }
+      } catch { /* ignore */ }
+    };
+    checkStatus();
+  }, [navigate]);
 
   const handlePhotoCapture = async (photoData) => {
     setError('');
@@ -29,6 +45,7 @@ const PhotoCapturePage = () => {
 
   return (
     <div className="space-y-6">
+      <StepProgress currentStep="photo" completedSteps={{ otp: true, fingerprint: true }} />
       <div className="text-center">
         <div className="w-16 h-16 mx-auto rounded-2xl bg-primary-50 dark:bg-primary-500/10 flex items-center justify-center text-3xl mb-4">📸</div>
         <h1 className="text-2xl font-bold text-surface-900 dark:text-white">{t('photo.title')}</h1>

@@ -15,13 +15,16 @@ const Sidebar = ({ open, onClose }) => {
     { to: '/admin/voting-time', icon: '⏰', label: t('nav.votingTime') },
     { to: '/admin/results', icon: '📈', label: t('nav.results') },
     { to: '/admin/logs', icon: '📋', label: t('nav.activityLogs') },
+    { to: '/admin/vote-map', icon: '🗺️', label: t('nav.voteMap') },
   ];
 
   const voterLinks = [
     { to: '/voter', icon: '🏠', label: t('nav.dashboard'), end: true },
     { to: '/voter/verify-otp', icon: '📧', label: t('nav.verifyOtp') },
     { to: '/voter/verify', icon: '🔐', label: t('nav.verifyIdentity') },
+    { to: '/voter/capture-photo', icon: '📸', label: t('nav.capturePhoto') || 'Capture Photo' },
     { to: '/voter/vote', icon: '🗳️', label: t('nav.castVote') },
+    { to: '/verify-vote', icon: '🔍', label: t('nav.verifyVote') },
   ];
 
   const links = user?.role === 'admin' ? adminLinks : voterLinks;

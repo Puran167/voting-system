@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getCandidates, castVote, getVotingStatus } from '../../services/api';
+import { getCandidates, castVote, getVotingStatus, getVoterStatus } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import CandidateCard from '../../components/CandidateCard';
+import StepProgress from '../../components/StepProgress';
 
 const VotingPage = () => {
   const [candidates, setCandidates] = useState([]);
@@ -21,17 +22,32 @@ const VotingPage = () => {
   const isVotingActive = votingStatus?.status === 'active';
   const isVotingClosed = votingStatus?.status === 'closed';
   const isVotingNotStarted = votingStatus?.status === 'not-started';
-  const isElectionNotConfigured = votingStatus?.status === 'no-settings';
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [candidatesRes, statusRes] = await Promise.all([
+        const [candidatesRes, statusRes, voterRes] = await Promise.all([
           getCandidates(),
-          getVotingStatus()
+          getVotingStatus(),
+          getVoterStatus()
         ]);
         setCandidates(candidatesRes.data);
         setVotingStatus(statusRes.data);
+
+        // Enforce prior steps
+        const vs = voterRes.data;
+        if (!vs.otpVerified) {
+          navigate('/voter/verify-otp', { replace: true });
+          return;
+        }
+        if (!vs.fingerprintVerified) {
+          navigate('/voter/verify', { replace: true });
+          return;
+        }
+        if (!vs.photoCaptured) {
+          navigate('/voter/capture-photo', { replace: true });
+          return;
+        }
       } catch (err) {
         setError('Failed to load voting data.');
       } finally {
@@ -39,7 +55,7 @@ const VotingPage = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [navigate]);
 
   // When voter selects a candidate, show confirmation
   const handleSelectCandidate = (candidate) => {
@@ -63,7 +79,17 @@ const VotingPage = () => {
     setSubmitting(true);
 
     try {
-      const res = await castVote({ candidateId: selectedCandidate._id });
+      // Attempt to capture voter's location
+      let location = '';
+      try {
+        const pos = await new Promise((resolve, reject) =>
+          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 })
+        );
+        location = `${pos.coords.latitude.toFixed(4)},${pos.coords.longitude.toFixed(4)}`;
+      } catch {
+        // Location is optional; proceed without it
+      }
+      const res = await castVote({ candidateId: selectedCandidate._id, location });
       setMessage('Your vote has been cast successfully!');
       setUser({ ...user, hasVoted: true });
       // Navigate to success/receipt page with receipt data
@@ -119,6 +145,7 @@ const VotingPage = () => {
 
   return (
     <div className="space-y-6">
+      <StepProgress currentStep="vote" completedSteps={{ otp: true, fingerprint: true, photo: true }} />
       <div>
         <h1 className="text-2xl font-bold text-surface-900 dark:text-white">{t('voting.castYourVote')}</h1>
         <p className="text-surface-500 dark:text-surface-400 text-sm mt-1">{t('voting.selectCandidate')}</p>

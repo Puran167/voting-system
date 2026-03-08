@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { verifyFingerprint } from '../../services/api';
+import { verifyFingerprint, getVoterStatus } from '../../services/api';
+import StepProgress from '../../components/StepProgress';
 
 const FingerprintVerification = () => {
   const [fingerprintId, setFingerprintId] = useState('');
@@ -10,6 +11,19 @@ const FingerprintVerification = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // Enforce step: OTP must be verified first
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const res = await getVoterStatus();
+        if (!res.data.otpVerified) {
+          navigate('/voter/verify-otp', { replace: true });
+        }
+      } catch { /* ignore */ }
+    };
+    checkStatus();
+  }, [navigate]);
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -31,6 +45,7 @@ const FingerprintVerification = () => {
 
   return (
     <div className="max-w-md mx-auto space-y-6">
+      <StepProgress currentStep="fingerprint" completedSteps={{ otp: true }} />
       <div className="text-center">
         <div className="w-16 h-16 mx-auto rounded-2xl bg-primary-50 dark:bg-primary-500/10 flex items-center justify-center text-3xl mb-4">🔐</div>
         <h1 className="text-2xl font-bold text-surface-900 dark:text-white">{t('fingerprint.title')}</h1>

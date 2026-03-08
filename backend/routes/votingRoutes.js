@@ -10,6 +10,9 @@ router.post('/cast', auth, voterOnly, electionTimeLock, votingController.castVot
 // POST /api/voting/capture-photo - Capture voter photo before voting (voter only)
 router.post('/capture-photo', auth, voterOnly, votingController.capturePhoto);
 
+// GET /api/voting/voter-status - Get voter verification status (voter only)
+router.get('/voter-status', auth, voterOnly, votingController.getVoterStatus);
+
 // GET /api/voting/receipt - Get voting receipt (voter only)
 router.get('/receipt', auth, voterOnly, votingController.getVotingReceipt);
 
@@ -24,5 +27,11 @@ router.get('/settings', auth, votingController.getVotingSettings);
 
 // GET /api/voting/logs - Get vote logs (admin only)
 router.get('/logs', auth, adminOnly, votingController.getVoteLogs);
+
+// GET /api/voting/verify/:verificationId - Verify a vote (public, no candidate reveal)
+router.get('/verify/:verificationId', votingController.verifyVote);
+
+// GET /api/voting/location-stats - Get vote counts by location (admin only)
+router.get('/location-stats', auth, adminOnly, votingController.getLocationStats);
 
 module.exports = router;

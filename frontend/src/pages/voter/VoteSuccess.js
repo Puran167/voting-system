@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import generateReceipt from '../../utils/generateReceipt';
+import StepProgress from '../../components/StepProgress';
 
 const VoteSuccess = () => {
   const location = useLocation();
@@ -10,15 +11,18 @@ const VoteSuccess = () => {
   const hasDownloaded = useRef(false);
   const { t } = useTranslation();
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!receipt) return;
     if (hasDownloaded.current) return;
     hasDownloaded.current = true;
-    generateReceipt(receipt);
+    await generateReceipt(receipt);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[400px]">
+    <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <div className="w-full max-w-2xl mb-6">
+        <StepProgress currentStep="receipt" completedSteps={{ otp: true, fingerprint: true, photo: true, vote: true, receipt: true }} />
+      </div>
       <div className="max-w-md w-full bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-500/10 dark:to-green-500/10 rounded-2xl border border-emerald-200 dark:border-emerald-500/20 p-8 text-center animate-scale-in">
         <div className="w-20 h-20 mx-auto rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-4xl mb-4">
           ✅
