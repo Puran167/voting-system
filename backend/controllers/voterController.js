@@ -3,78 +3,83 @@ const nodemailer = require("nodemailer");
 const User = require("../models/User");
 
 
-// Create Nodemailer transporter
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: "gmail",
+// Create transporter
+const createTransporter = async () => {
+
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS
     }
   });
+
+  // Verify connection for debugging
+  await transporter.verify();
+  console.log("SMTP server ready");
+
+  return transporter;
 };
 
 
-// Generate 6 digit OTP
+// Generate OTP
 const generateOTP = () => {
   return crypto.randomInt(100000, 999999).toString();
 };
 
 
-// ============================
+// ======================
 // SEND OTP
-// ============================
+// ======================
 exports.sendOtp = async (req, res) => {
+
   try {
 
     const user = await User.findById(req.user._id);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      return res.status(404).json({ message: "User not found" });
     }
 
     const otp = generateOTP();
-    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+    const expiry = new Date(Date.now() + 5 * 60 * 1000);
 
     user.otp = otp;
-    user.otpExpiry = otpExpiry;
+    user.otpExpiry = expiry;
     user.otpVerified = false;
 
     await user.save();
 
-    const transporter = createTransporter();
+    const transporter = await createTransporter();
 
     console.log("Sending OTP to:", user.email);
 
     await transporter.sendMail({
       from: `"Smart Voting System" <${process.env.EMAIL_USER}>`,
       to: user.email,
-      subject: "Your OTP for Smart Voting System",
+      subject: "Your OTP Verification Code",
       html: `
-        <div style="font-family: Arial; padding:20px">
+        <div style="font-family:Arial;padding:20px">
           <h2>Smart Voting System</h2>
           <p>Hello <b>${user.name}</b></p>
           <p>Your OTP is:</p>
-          <h1>${otp}</h1>
+          <h1 style="letter-spacing:5px">${otp}</h1>
           <p>This OTP will expire in 5 minutes.</p>
         </div>
       `
     });
 
-    console.log("OTP email sent successfully");
-
-    const emailParts = user.email.split("@");
-    const maskedEmail =
-      emailParts[0].substring(0, 2) + "***@" + emailParts[1];
+    console.log("OTP email sent");
 
     res.json({
-      message: "OTP sent successfully",
-      email: maskedEmail
+      message: "OTP sent successfully"
     });
 
   } catch (error) {
 
-    console.error("Send OTP error:", error);
+    console.error("OTP send error:", error);
 
     res.status(500).json({
       message: "Failed to send OTP",
@@ -85,10 +90,11 @@ exports.sendOtp = async (req, res) => {
 
 
 
-// ============================
+// ======================
 // VERIFY OTP
-// ============================
+// ======================
 exports.verifyOtp = async (req, res) => {
+
   try {
 
     const { otp } = req.body;
@@ -104,27 +110,20 @@ exports.verifyOtp = async (req, res) => {
     }
 
     if (!user.otp || !user.otpExpiry) {
-      return res.status(400).json({
-        message: "OTP not requested"
-      });
+      return res.status(400).json({ message: "OTP not requested" });
     }
 
     if (new Date() > user.otpExpiry) {
 
       user.otp = null;
       user.otpExpiry = null;
-
       await user.save();
 
-      return res.status(400).json({
-        message: "OTP expired"
-      });
+      return res.status(400).json({ message: "OTP expired" });
     }
 
     if (user.otp !== otp) {
-      return res.status(400).json({
-        message: "Invalid OTP"
-      });
+      return res.status(400).json({ message: "Invalid OTP" });
     }
 
     user.otp = null;
@@ -139,7 +138,7 @@ exports.verifyOtp = async (req, res) => {
 
   } catch (error) {
 
-    console.error("Verify OTP error:", error);
+    console.error("OTP verify error:", error);
 
     res.status(500).json({
       message: "OTP verification failed"
