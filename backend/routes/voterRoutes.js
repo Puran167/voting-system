@@ -1,25 +1,75 @@
-const express = require('express');
-const { body } = require('express-validator');
-const router = express.Router();
-const voterController = require('../controllers/voterController');
-const { auth, adminOnly, voterOnly } = require('../middleware/auth');
+const User = require('../models/User');
 
-// GET /api/voters - Get all voters (admin only)
-router.get('/', auth, adminOnly, voterController.getAllVoters);
 
-// POST /api/voters - Add a new voter (admin only)
-router.post('/', auth, adminOnly, [
-  body('name').trim().notEmpty().withMessage('Name is required'),
-  body('email').isEmail().withMessage('Valid email is required'),
-  body('voterId').trim().notEmpty().withMessage('Voter ID is required'),
-  body('fingerprintId').trim().notEmpty().withMessage('Fingerprint ID is required'),
-  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
-], voterController.addVoter);
+// GET all voters
+exports.getAllVoters = async (req, res) => {
+  try {
+    const voters = await User.find({ role: 'voter' });
+    res.json(voters);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch voters" });
+  }
+};
 
-// DELETE /api/voters/:id - Delete a voter (admin only)
-router.delete('/:id', auth, adminOnly, voterController.deleteVoter);
 
-// POST /api/voters/verify-fingerprint - Verify fingerprint (voter only)
-router.post('/verify-fingerprint', auth, voterOnly, voterController.verifyFingerprint);
+// ADD voter
+exports.addVoter = async (req, res) => {
+  try {
 
-module.exports = router;
+    const { name, email, voterId, fingerprintId, password } = req.body;
+
+    const voter = new User({
+      name,
+      email,
+      voterId,
+      fingerprintId,
+      password,
+      role: "voter"
+    });
+
+    await voter.save();
+
+    res.json({ message: "Voter added successfully" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to add voter" });
+  }
+};
+
+
+// DELETE voter
+exports.deleteVoter = async (req, res) => {
+  try {
+
+    await User.findByIdAndDelete(req.params.id);
+
+    res.json({ message: "Voter deleted successfully" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to delete voter" });
+  }
+};
+
+
+// VERIFY fingerprint
+exports.verifyFingerprint = async (req, res) => {
+  try {
+
+    const { fingerprintId } = req.body;
+
+    const voter = await User.findOne({ fingerprintId });
+
+    if (!voter) {
+      return res.status(400).json({ message: "Fingerprint not recognized" });
+    }
+
+    res.json({ message: "Fingerprint verified" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Fingerprint verification failed" });
+  }
+};
