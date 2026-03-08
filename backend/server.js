@@ -66,14 +66,6 @@ app.use((req, res, next) => {
   req.io = io;
   next();
 });
-// Debug: log route module types
-console.log("Route types:", {
-  authRoutes: typeof authRoutes,
-  voterRoutes: typeof voterRoutes,
-  candidateRoutes: typeof candidateRoutes,
-  votingRoutes: typeof votingRoutes,
-  otpRoutes: typeof otpRoutes
-});
 
 // ===== API ROUTES =====
 app.use("/api/auth", authRoutes);
