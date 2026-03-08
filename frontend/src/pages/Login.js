@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { login } from '../services/api';
+import NoticePopup from '../components/NoticePopup';
 
 
 const Login = () => {
@@ -36,6 +37,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-600 via-primary-700 to-purple-800 p-4">
+      <NoticePopup />
       <div className="w-full max-w-md animate-scale-in">
         {/* Brand */}
         <div className="text-center mb-8">

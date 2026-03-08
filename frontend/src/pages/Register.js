@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { register } from '../services/api';
+import NoticePopup from '../components/NoticePopup';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -42,6 +43,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-600 via-primary-700 to-purple-800 p-4">
+      <NoticePopup />
       <div className="w-full max-w-2xl animate-scale-in">
         {/* Brand */}
         <div className="text-center mb-8">

@@ -3,8 +3,8 @@ const router = express.Router();
 const noticeController = require('../controllers/noticeController');
 const { auth, adminOnly } = require('../middleware/auth');
 
-// GET /api/notices — fetch all notices (authenticated)
-router.get('/', auth, noticeController.getAllNotices);
+// GET /api/notices — fetch all notices (public)
+router.get('/', noticeController.getAllNotices);
 
 // POST /api/notices — admin adds notice
 router.post('/', auth, adminOnly, noticeController.createNotice);
