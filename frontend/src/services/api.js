@@ -92,11 +92,4 @@ export const verifyVoteById = (id) => API.get(`/voting/verify/${encodeURICompone
 export const getLocationStats = () => API.get("/voting/location-stats");
 
 
-// =======================
-
-export const sendOtp = () => API.post("/otp/send");
-
-export const verifyOtp = (data) => API.post("/otp/verify", data);
-
-
 export default API;

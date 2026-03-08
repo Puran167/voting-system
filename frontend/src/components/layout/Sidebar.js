@@ -20,7 +20,6 @@ const Sidebar = ({ open, onClose }) => {
 
   const voterLinks = [
     { to: '/voter', icon: '🏠', label: t('nav.dashboard'), end: true },
-    { to: '/voter/verify-otp', icon: '📧', label: t('nav.verifyOtp') },
     { to: '/voter/verify', icon: '🔐', label: t('nav.verifyIdentity') },
     { to: '/voter/capture-photo', icon: '📸', label: t('nav.capturePhoto') || 'Capture Photo' },
     { to: '/voter/vote', icon: '🗳️', label: t('nav.castVote') },

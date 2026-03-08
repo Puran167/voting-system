@@ -1,7 +1,6 @@
 import React from 'react';
 
 const steps = [
-  { key: 'otp', icon: '📧', label: 'OTP Verify' },
   { key: 'fingerprint', icon: '🔐', label: 'Fingerprint' },
   { key: 'photo', icon: '📸', label: 'Photo' },
   { key: 'vote', icon: '🗳️', label: 'Cast Vote' },

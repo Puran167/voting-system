@@ -36,10 +36,6 @@ const VotingPage = () => {
 
         // Enforce prior steps
         const vs = voterRes.data;
-        if (!vs.otpVerified) {
-          navigate('/voter/verify-otp', { replace: true });
-          return;
-        }
         if (!vs.fingerprintVerified) {
           navigate('/voter/verify', { replace: true });
           return;
@@ -145,7 +141,7 @@ const VotingPage = () => {
 
   return (
     <div className="space-y-6">
-      <StepProgress currentStep="vote" completedSteps={{ otp: true, fingerprint: true, photo: true }} />
+      <StepProgress currentStep="vote" completedSteps={{ fingerprint: true, photo: true }} />
       <div>
         <h1 className="text-2xl font-bold text-surface-900 dark:text-white">{t('voting.castYourVote')}</h1>
         <p className="text-surface-500 dark:text-surface-400 text-sm mt-1">{t('voting.selectCandidate')}</p>

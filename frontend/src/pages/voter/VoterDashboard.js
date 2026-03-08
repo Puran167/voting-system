@@ -30,9 +30,8 @@ const VoterDashboard = () => {
 
   // Determine current step and completed steps
   const getFlowState = () => {
-    if (!voterStatus) return { currentStep: 'otp', completedSteps: {} };
+    if (!voterStatus) return { currentStep: 'fingerprint', completedSteps: {} };
     const completed = {};
-    if (voterStatus.otpVerified) completed.otp = true;
     if (voterStatus.fingerprintVerified) completed.fingerprint = true;
     if (voterStatus.photoCaptured) completed.photo = true;
     if (voterStatus.hasVoted) {
@@ -40,8 +39,7 @@ const VoterDashboard = () => {
       completed.receipt = true;
     }
 
-    let currentStep = 'otp';
-    if (voterStatus.otpVerified) currentStep = 'fingerprint';
+    let currentStep = 'fingerprint';
     if (voterStatus.fingerprintVerified) currentStep = 'photo';
     if (voterStatus.photoCaptured) currentStep = 'vote';
     if (voterStatus.hasVoted) currentStep = 'receipt';
@@ -53,17 +51,15 @@ const VoterDashboard = () => {
 
   const handleContinueFlow = () => {
     switch (currentStep) {
-      case 'otp': navigate('/voter/verify-otp'); break;
       case 'fingerprint': navigate('/voter/verify'); break;
       case 'photo': navigate('/voter/capture-photo'); break;
       case 'vote': navigate('/voter/vote'); break;
       case 'receipt': navigate('/voter/success'); break;
-      default: navigate('/voter/verify-otp');
+      default: navigate('/voter/verify');
     }
   };
 
   const stepDetails = [
-    { key: 'otp', icon: '📧', title: t('dashboard.otpVerification') || 'OTP Verification', desc: t('dashboard.otpDesc') || 'Verify your email with a one-time password', path: '/voter/verify-otp', done: completedSteps.otp },
     { key: 'fingerprint', icon: '🔐', title: t('dashboard.fingerprintVerification'), desc: t('dashboard.verifyIdentity'), path: '/voter/verify', done: completedSteps.fingerprint },
     { key: 'photo', icon: '📸', title: t('dashboard.photoCapture') || 'Photo Capture', desc: t('dashboard.photoDesc') || 'Capture your photo as proof of identity', path: '/voter/capture-photo', done: completedSteps.photo },
     { key: 'vote', icon: '🗳️', title: t('dashboard.castYourVote'), desc: t('dashboard.selectAndSubmit'), path: '/voter/vote', done: completedSteps.vote },
@@ -87,7 +83,7 @@ const VoterDashboard = () => {
               onClick={handleContinueFlow}
               className="px-8 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white font-semibold shadow-lg shadow-primary-500/30 transition-all duration-200"
             >
-              {currentStep === 'otp' ? 'Start Verification →' :
+              {currentStep === 'fingerprint' ? 'Start Verification →' :
                currentStep === 'receipt' ? 'View Receipt →' :
                'Continue to Next Step →'}
             </button>

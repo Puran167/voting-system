@@ -11,7 +11,6 @@ const authRoutes = require("./routes/authRoutes");
 const voterRoutes = require("./routes/voterRoutes");
 const candidateRoutes = require("./routes/candidateRoutes");
 const votingRoutes = require("./routes/votingRoutes");
-const otpRoutes = require("./routes/otpRoutes");
 
 const app = express();
 const server = http.createServer(app);
@@ -81,7 +80,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/voters", voterRoutes);
 app.use("/api/candidates", candidateRoutes);
 app.use("/api/voting", votingRoutes);
-app.use("/api/otp", otpRoutes);
 
 
 // ===== SOCKET CONNECTION =====

@@ -12,7 +12,6 @@ import Register from './pages/Register';
 
 // Voter pages
 import VoterDashboard from './pages/voter/VoterDashboard';
-import OtpVerification from './pages/voter/OtpVerification';
 import FingerprintVerification from './pages/voter/FingerprintVerification';
 import VotingPage from './pages/voter/VotingPage';
 import PhotoCapturePage from './pages/voter/PhotoCapturePage';
@@ -55,7 +54,6 @@ function App() {
 
             {/* Voter routes (with dashboard layout) */}
             <Route path="/voter" element={<DashboardRoute role="voter"><VoterDashboard /></DashboardRoute>} />
-            <Route path="/voter/verify-otp" element={<DashboardRoute role="voter"><OtpVerification /></DashboardRoute>} />
             <Route path="/voter/verify" element={<DashboardRoute role="voter"><FingerprintVerification /></DashboardRoute>} />
             <Route path="/voter/capture-photo" element={<DashboardRoute role="voter"><PhotoCapturePage /></DashboardRoute>} />
             <Route path="/voter/vote" element={<DashboardRoute role="voter"><VotingPage /></DashboardRoute>} />

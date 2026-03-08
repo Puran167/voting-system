@@ -26,7 +26,7 @@ const Login = () => {
       const res = await login(formData);
       loginUser(res.data.token, res.data.user);
       // Redirect based on role
-      navigate(res.data.user.role === 'admin' ? '/admin' : '/voter/verify-otp');
+      navigate(res.data.user.role === 'admin' ? '/admin' : '/voter/verify');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {

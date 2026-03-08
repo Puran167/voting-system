@@ -30,7 +30,7 @@ const Register = () => {
       const { confirmPassword, ...data } = formData;
       const res = await register(data);
       loginUser(res.data.token, res.data.user);
-      navigate(res.data.user.role === 'admin' ? '/admin' : '/voter/verify-otp');
+      navigate(res.data.user.role === 'admin' ? '/admin' : '/voter/verify');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {

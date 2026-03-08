@@ -1,155 +1,81 @@
-const crypto = require("crypto");
-const nodemailer = require("nodemailer");
-const User = require("../models/User");
+const User = require('../models/User');
+const { validationResult } = require('express-validator');
 
-
-// ======================
-// CREATE EMAIL TRANSPORTER
-// ======================
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-
-  // Force IPv4 (fix ENETUNREACH error on Render)
-  family: 4,
-
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-
-
-// Verify SMTP connection once at startup
-transporter.verify((error) => {
-  if (error) {
-    console.error("SMTP connection error:", error);
-  } else {
-    console.log("SMTP server ready to send emails");
-  }
-});
-
-
-// ======================
-// GENERATE OTP
-// ======================
-const generateOTP = () => {
-  return crypto.randomInt(100000, 999999).toString();
-};
-
-
-// ======================
-// SEND OTP
-// ======================
-exports.sendOtp = async (req, res) => {
-
+// Get all voters (admin only)
+exports.getAllVoters = async (req, res) => {
   try {
-
-    const user = await User.findById(req.user._id);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const otp = generateOTP();
-    const expiry = new Date(Date.now() + 5 * 60 * 1000);
-
-    user.otp = otp;
-    user.otpExpiry = expiry;
-    user.otpVerified = false;
-
-    await user.save();
-
-    console.log("Sending OTP to:", user.email);
-
-    await transporter.sendMail({
-      from: `"Smart Voting System" <${process.env.EMAIL_USER}>`,
-      to: user.email,
-      subject: "Your OTP Verification Code",
-      html: `
-        <div style="font-family:Arial;padding:20px">
-          <h2>Smart Voting System</h2>
-          <p>Hello <b>${user.name}</b></p>
-          <p>Your OTP is:</p>
-          <h1 style="letter-spacing:5px">${otp}</h1>
-          <p>This OTP will expire in 5 minutes.</p>
-        </div>
-      `
-    });
-
-    console.log("OTP email sent successfully");
-
-    res.json({
-      message: "OTP sent successfully"
-    });
-
+    const voters = await User.find({ role: 'voter' }).select('-password').sort({ createdAt: -1 });
+    res.json(voters);
   } catch (error) {
-
-    console.error("OTP send error:", error);
-
-    res.status(500).json({
-      message: "Failed to send OTP",
-      error: error.message
-    });
+    res.status(500).json({ message: 'Server error.', error: error.message });
   }
 };
 
-
-
-// ======================
-// VERIFY OTP
-// ======================
-exports.verifyOtp = async (req, res) => {
-
+// Add a new voter (admin only)
+exports.addVoter = async (req, res) => {
   try {
-
-    const { otp } = req.body;
-
-    if (!otp) {
-      return res.status(400).json({ message: "OTP required" });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
 
-    const user = await User.findById(req.user._id);
+    const { name, email, voterId, fingerprintId, password } = req.body;
 
+    const existingUser = await User.findOne({
+      $or: [{ email }, { voterId }, { fingerprintId }]
+    });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User with this email, voter ID, or fingerprint ID already exists.' });
+    }
+
+    const voter = new User({ name, email, voterId, fingerprintId, password, role: 'voter' });
+    await voter.save();
+
+    const voterData = voter.toObject();
+    delete voterData.password;
+    res.status(201).json(voterData);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.', error: error.message });
+  }
+};
+
+// Delete a voter (admin only)
+exports.deleteVoter = async (req, res) => {
+  try {
+    const voter = await User.findByIdAndDelete(req.params.id);
+    if (!voter) {
+      return res.status(404).json({ message: 'Voter not found.' });
+    }
+    res.json({ message: 'Voter deleted successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.', error: error.message });
+  }
+};
+
+// Verify fingerprint ID
+exports.verifyFingerprint = async (req, res) => {
+  try {
+    const { fingerprintId } = req.body;
+    if (!fingerprintId) {
+      return res.status(400).json({ message: 'Fingerprint ID is required.' });
+    }
+
+    // Check if fingerprint belongs to the logged-in user
+    const user = await User.findOne({ _id: req.user._id, fingerprintId });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(400).json({ message: 'Fingerprint ID does not match your records.' });
     }
 
-    if (!user.otp || !user.otpExpiry) {
-      return res.status(400).json({ message: "OTP not requested" });
+    if (user.hasVoted) {
+      return res.status(400).json({ message: 'You have already voted. Duplicate voting is not allowed.' });
     }
 
-    if (new Date() > user.otpExpiry) {
-
-      user.otp = null;
-      user.otpExpiry = null;
-
-      await user.save();
-
-      return res.status(400).json({ message: "OTP expired" });
-    }
-
-    if (user.otp !== otp) {
-      return res.status(400).json({ message: "Invalid OTP" });
-    }
-
-    user.otp = null;
-    user.otpExpiry = null;
-    user.otpVerified = true;
-
+    // Mark fingerprint as verified for this user
+    user.fingerprintVerified = true;
     await user.save();
 
-    res.json({
-      message: "OTP verified successfully"
-    });
-
+    res.json({ message: 'Fingerprint verified successfully.', verified: true });
   } catch (error) {
-
-    console.error("OTP verify error:", error);
-
-    res.status(500).json({
-      message: "OTP verification failed"
-    });
+    res.status(500).json({ message: 'Server error.', error: error.message });
   }
 };

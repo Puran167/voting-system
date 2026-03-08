@@ -17,11 +17,6 @@ exports.castVote = async (req, res) => {
       return res.status(400).json({ message: 'You have already voted.' });
     }
 
-    // Check if OTP was verified before voting
-    if (!user.otpVerified) {
-      return res.status(400).json({ message: 'OTP email verification is required before voting.' });
-    }
-
     // Check if fingerprint was verified before voting
     if (!user.fingerprintVerified) {
       return res.status(400).json({ message: 'Fingerprint verification is required before voting.' });
@@ -94,11 +89,6 @@ exports.capturePhoto = async (req, res) => {
     }
 
     const user = await User.findById(userId);
-
-    // Must have OTP verified first
-    if (!user.otpVerified) {
-      return res.status(400).json({ message: 'OTP email verification is required before photo capture.' });
-    }
 
     // Must have fingerprint verified first
     if (!user.fingerprintVerified) {
@@ -224,12 +214,11 @@ exports.getVotingReceipt = async (req, res) => {
 // Get voter verification status (which steps are completed)
 exports.getVoterStatus = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('otpVerified fingerprintVerified capturedPhoto hasVoted');
+    const user = await User.findById(req.user._id).select('fingerprintVerified capturedPhoto hasVoted');
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
     res.json({
-      otpVerified: !!user.otpVerified,
       fingerprintVerified: !!user.fingerprintVerified,
       photoCaptured: !!user.capturedPhoto,
       hasVoted: !!user.hasVoted

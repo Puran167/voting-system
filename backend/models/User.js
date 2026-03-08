@@ -47,18 +47,6 @@ const userSchema = new mongoose.Schema({
   capturedPhoto: {
     type: String,
     default: ''
-  },
-  otp: {
-    type: String,
-    default: null
-  },
-  otpExpiry: {
-    type: Date,
-    default: null
-  },
-  otpVerified: {
-    type: Boolean,
-    default: false
   }
 }, { timestamps: true });
 
