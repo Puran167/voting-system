@@ -131,7 +131,7 @@ const ProfileDropdown = () => {
 
       {/* Profile Modal */}
       {showProfile && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-4">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -139,38 +139,38 @@ const ProfileDropdown = () => {
           />
 
           {/* Modal */}
-          <div className="relative w-full max-w-md bg-white dark:bg-surface-900 rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
+          <div className="relative w-full max-w-md max-h-[95vh] bg-white dark:bg-surface-900 rounded-2xl sm:rounded-3xl shadow-2xl overflow-y-auto animate-fade-in">
             {/* Header */}
-            <div className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-purple-500 px-6 pt-8 pb-16">
+            <div className="sticky top-0 z-10 relative bg-gradient-to-br from-primary-600 via-primary-500 to-purple-500 px-5 sm:px-6 pt-6 sm:pt-8 pb-14 sm:pb-16">
               <button
                 onClick={() => setShowProfile(false)}
-                className="absolute top-4 right-4 p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              <h2 className="text-xl font-bold text-white">{t('profile.title')}</h2>
-              <p className="text-sm text-white/70 mt-0.5">{t('profile.subtitle')}</p>
+              <h2 className="text-lg sm:text-xl font-bold text-white">{t('profile.title')}</h2>
+              <p className="text-xs sm:text-sm text-white/70 mt-0.5">{t('profile.subtitle')}</p>
             </div>
 
             {/* Avatar overlap */}
-            <div className="flex justify-center -mt-10">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-400 to-purple-500 flex items-center justify-center text-white text-3xl font-bold ring-4 ring-white dark:ring-surface-900 shadow-lg">
+            <div className="flex justify-center -mt-9 sm:-mt-10">
+              <div className="w-[72px] h-[72px] sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-primary-400 to-purple-500 flex items-center justify-center text-white text-2xl sm:text-3xl font-bold ring-4 ring-white dark:ring-surface-900 shadow-lg">
                 {displayProfile?.name?.charAt(0)?.toUpperCase() || 'U'}
               </div>
             </div>
 
             {/* Content */}
-            <div className="px-6 pt-4 pb-6">
+            <div className="px-5 sm:px-6 pt-3 sm:pt-4 pb-5 sm:pb-6">
               {loading ? (
                 <div className="flex justify-center py-8">
                   <div className="w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
                 </div>
               ) : (
                 <>
-                  <div className="text-center mb-5">
-                    <h3 className="text-lg font-bold text-surface-900 dark:text-white">
+                  <div className="text-center mb-4 sm:mb-5">
+                    <h3 className="text-base sm:text-lg font-bold text-surface-900 dark:text-white">
                       {displayProfile?.name}
                     </h3>
                     <span className={`inline-block mt-1 px-3 py-0.5 rounded-full text-xs font-semibold capitalize ${
@@ -182,7 +182,7 @@ const ProfileDropdown = () => {
                     </span>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2.5 sm:space-y-3">
                     <ProfileField
                       icon={
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,7 +222,7 @@ const ProfileDropdown = () => {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-3 mt-6">
+                  <div className="flex gap-3 mt-5 sm:mt-6">
                     <button
                       onClick={() => setShowProfile(false)}
                       className="flex-1 px-4 py-2.5 rounded-xl bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 text-sm font-semibold hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors"
@@ -247,13 +247,13 @@ const ProfileDropdown = () => {
 };
 
 const ProfileField = ({ icon, label, value }) => (
-  <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-50 dark:bg-surface-800/50">
-    <div className="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-500/20 text-primary-600 dark:text-primary-400 flex items-center justify-center shrink-0">
+  <div className="flex items-start gap-3 p-3 rounded-xl bg-surface-50 dark:bg-surface-800/50">
+    <div className="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-500/20 text-primary-600 dark:text-primary-400 flex items-center justify-center shrink-0 mt-0.5">
       {icon}
     </div>
-    <div className="min-w-0">
+    <div className="min-w-0 flex-1">
       <p className="text-[11px] text-surface-500 dark:text-surface-400 font-medium uppercase tracking-wide">{label}</p>
-      <p className="text-sm font-semibold text-surface-900 dark:text-white truncate">{value || '—'}</p>
+      <p className="text-sm font-semibold text-surface-900 dark:text-white break-all">{value || '—'}</p>
     </div>
   </div>
 );
