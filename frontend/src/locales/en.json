@@ -60,7 +60,8 @@
     "capturePhoto": "Capture Photo",
     "castVote": "Cast Vote",
     "verifyVote": "Verify Vote",
-    "voteMap": "Vote Map"
+    "voteMap": "Vote Map",
+    "notices": "Announcements"
   },
   "login": {
     "welcomeBack": "Welcome back",
@@ -282,5 +283,11 @@
     "voteCount": "Vote Count",
     "percentage": "Percentage",
     "unknown": "Unknown"
+  },
+  "notices": {
+    "title": "Announcements & Notices",
+    "subtitle": "Stay updated with the latest election information",
+    "manage": "Manage Notices",
+    "manageDesc": "Create and manage election announcements"
   }
 }
