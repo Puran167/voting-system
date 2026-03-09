@@ -33,7 +33,14 @@ const Register = () => {
       loginUser(res.data.token, res.data.user);
       navigate(res.data.user.role === 'admin' ? '/admin' : '/voter/verify');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      const data = err.response?.data;
+      if (data?.message) {
+        setError(data.message);
+      } else if (data?.errors?.length) {
+        setError(data.errors.map(e => e.msg).join(', '));
+      } else {
+        setError('Registration failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -57,7 +64,6 @@ const Register = () => {
         {/* Card */}
         <div className="bg-white dark:bg-surface-900 rounded-2xl shadow-2xl p-8 border border-white/20 dark:border-surface-800">
           <h2 className="text-xl font-bold text-surface-900 dark:text-white mb-1">Complete Registration</h2>
-          <p className="text-sm text-surface-500 dark:text-surface-400 mb-6">Your Voter ID and Name must match the admin-approved records</p>
 
           {error && (
             <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400 text-sm font-medium">
