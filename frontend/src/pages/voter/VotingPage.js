@@ -75,13 +75,25 @@ const VotingPage = () => {
     setSubmitting(true);
 
     try {
-      // Attempt to capture voter's location
+      // Attempt to capture voter's location with city/state name
       let location = '';
       try {
         const pos = await new Promise((resolve, reject) =>
           navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 })
         );
-        location = `${pos.coords.latitude.toFixed(4)},${pos.coords.longitude.toFixed(4)}`;
+        const lat = pos.coords.latitude.toFixed(4);
+        const lon = pos.coords.longitude.toFixed(4);
+        // Reverse geocode to get city/state name
+        try {
+          const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=10`);
+          const geoData = await geoRes.json();
+          const addr = geoData.address || {};
+          const city = addr.city || addr.town || addr.village || addr.county || '';
+          const state = addr.state || '';
+          location = [city, state].filter(Boolean).join(', ') || `${lat},${lon}`;
+        } catch {
+          location = `${lat},${lon}`;
+        }
       } catch {
         // Location is optional; proceed without it
       }

@@ -308,8 +308,38 @@ exports.getLocationStats = async (req, res) => {
       { $sort: { count: -1 } }
     ]);
 
+    // Reverse geocode any raw coordinate entries
     const locationMap = {};
-    stats.forEach((s) => { locationMap[s._id] = s.count; });
+    for (const s of stats) {
+      let label = s._id;
+      // Check if location looks like raw coordinates (e.g. "29.1456,75.7360")
+      const coordMatch = s._id.match(/^(-?\d+\.?\d*),\s*(-?\d+\.?\d*)$/);
+      if (coordMatch) {
+        try {
+          const https = require('https');
+          const geoData = await new Promise((resolve, reject) => {
+            https.get(
+              `https://nominatim.openstreetmap.org/reverse?lat=${coordMatch[1]}&lon=${coordMatch[2]}&format=json&zoom=10`,
+              { headers: { 'User-Agent': 'SmartVotingSystem/1.0' } },
+              (resp) => {
+                let data = '';
+                resp.on('data', chunk => data += chunk);
+                resp.on('end', () => resolve(JSON.parse(data)));
+              }
+            ).on('error', reject);
+          });
+          const addr = geoData.address || {};
+          const city = addr.city || addr.town || addr.village || addr.county || '';
+          const state = addr.state || '';
+          const resolved = [city, state].filter(Boolean).join(', ');
+          if (resolved) label = resolved;
+        } catch {
+          // Keep the raw coordinates as fallback
+        }
+      }
+      // Merge counts for same resolved location names
+      locationMap[label] = (locationMap[label] || 0) + s.count;
+    }
 
     res.json(locationMap);
   } catch (error) {
