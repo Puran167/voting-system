@@ -98,7 +98,21 @@ mongoose
   .then(async () => {
     console.log("MongoDB connected");
 
-    // Sync indexes: drops old indexes and creates new ones from schema
+    // Drop old non-sparse indexes and sync with schema
+    try {
+      const collection = mongoose.connection.collection("users");
+      const indexes = await collection.indexes();
+      for (const idx of indexes) {
+        // Drop old non-sparse unique indexes on email or fingerprintId
+        if ((idx.key.email || idx.key.fingerprintId) && idx.unique && !idx.sparse) {
+          console.log(`Dropping old index: ${idx.name}`);
+          await collection.dropIndex(idx.name);
+        }
+      }
+    } catch (e) {
+      console.log("Index cleanup note:", e.message);
+    }
+
     await User.syncIndexes();
     console.log("User indexes synced");
 
