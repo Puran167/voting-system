@@ -9,7 +9,7 @@ const ProfileDropdown = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
+  const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || (window.location.hostname !== 'localhost' ? 'https://voting-system-backend-b9y7.onrender.com' : 'http://localhost:5000');
 
   // Close dropdown on outside click
   useEffect(() => {

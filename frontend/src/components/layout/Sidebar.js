@@ -8,7 +8,7 @@ const Sidebar = ({ open, onClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
+  const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || (window.location.hostname !== 'localhost' ? 'https://voting-system-backend-b9y7.onrender.com' : 'http://localhost:5000');
 
   const adminLinks = [
     { to: '/admin', icon: '📊', label: t('nav.dashboard'), end: true },
