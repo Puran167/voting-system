@@ -1,8 +1,17 @@
 import axios from "axios";
 
+// Auto-detect backend URL based on environment
+const getBaseURL = () => {
+  if (process.env.REACT_APP_API_URL) return process.env.REACT_APP_API_URL;
+  if (window.location.hostname !== "localhost") {
+    return "https://voting-system-backend-b9y7.onrender.com/api";
+  }
+  return "http://localhost:5000/api";
+};
+
 // Backend URL (with /api prefix)
 const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "https://voting-system-backend-b9y7.onrender.com",
+  baseURL: getBaseURL(),
   withCredentials: true
 });
 
