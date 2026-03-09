@@ -11,8 +11,7 @@ const getBaseURL = () => {
 
 // Backend URL (with /api prefix)
 const API = axios.create({
-  baseURL: getBaseURL(),
-  withCredentials: true
+  baseURL: getBaseURL()
 });
 
 
