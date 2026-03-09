@@ -9,6 +9,7 @@ const ProfileDropdown = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -33,9 +34,17 @@ const ProfileDropdown = () => {
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
       >
-        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold shadow-md">
-          {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-        </div>
+        {user?.profilePhoto ? (
+          <img
+            src={`${API_BASE}${user.profilePhoto}`}
+            alt="Profile"
+            className="w-9 h-9 rounded-full object-cover shadow-md"
+          />
+        ) : (
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold shadow-md">
+            {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+          </div>
+        )}
         <div className="hidden sm:block text-left">
           <p className="text-sm font-semibold text-surface-900 dark:text-white leading-tight truncate max-w-[120px]">
             {user?.name}

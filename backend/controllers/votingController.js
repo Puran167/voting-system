@@ -274,6 +274,31 @@ exports.verifyVote = async (req, res) => {
   }
 };
 
+// Delete a single vote log (admin only)
+exports.deleteVoteLog = async (req, res) => {
+  try {
+    const log = await VoteLog.findByIdAndDelete(req.params.id);
+    if (!log) {
+      return res.status(404).json({ message: 'Vote log not found.' });
+    }
+    res.json({ message: 'Vote log deleted successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.', error: error.message });
+  }
+};
+
+// Clear all vote logs (admin only) — also resets candidate votes and voter statuses
+exports.clearAllVoteLogs = async (req, res) => {
+  try {
+    await VoteLog.deleteMany({});
+    await Candidate.updateMany({}, { $set: { votes: 0 } });
+    await User.updateMany({ role: 'voter' }, { $set: { hasVoted: false, fingerprintVerified: false, capturedPhoto: '' } });
+    res.json({ message: 'All vote logs, candidate votes, and voter statuses have been reset.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.', error: error.message });
+  }
+};
+
 // Get vote counts by location (admin only)
 exports.getLocationStats = async (req, res) => {
   try {

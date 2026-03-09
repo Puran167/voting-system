@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Backend URL (with /api prefix)
 const API = axios.create({
-  baseURL: "https://voting-system-backend-b9y7.onrender.com/api",
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:5000/api",
   withCredentials: true
 });
 
@@ -34,6 +34,11 @@ export const register = (data) => API.post("/auth/register", data);
 
 export const getProfile = () => API.get("/auth/profile");
 
+export const uploadProfilePhoto = (formData) =>
+  API.post("/auth/profile-photo", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
 
 // =======================
 // VOTERS
@@ -47,6 +52,9 @@ export const deleteVoter = (id) => API.delete(`/voters/${id}`);
 
 export const verifyFingerprint = (data) =>
   API.post("/voters/verify-fingerprint", data);
+
+// Admin pre-register voter (voterId + name only)
+export const adminAddVoter = (data) => API.post("/voters", data);
 
 
 // =======================
@@ -79,6 +87,10 @@ export const setVotingTime = (data) => API.post("/voting/settings", data);
 export const getVotingSettings = () => API.get("/voting/settings");
 
 export const getVoteLogs = () => API.get("/voting/logs");
+
+export const deleteVoteLog = (id) => API.delete(`/voting/logs/${id}`);
+
+export const clearAllVoteLogs = () => API.delete("/voting/logs");
 
 export const getVotingReceipt = () => API.get("/voting/receipt");
 

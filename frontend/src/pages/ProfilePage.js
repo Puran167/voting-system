@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getProfile } from '../services/api';
+import { toast } from 'react-toastify';
+import { getProfile, uploadProfilePhoto } from '../services/api';
 
 const ProfilePage = () => {
-  const { user, logout } = useAuth();
+  const { user, setUser, logout } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -30,7 +33,38 @@ const ProfilePage = () => {
     navigate('/login');
   };
 
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Only JPEG, PNG, and WebP images are allowed.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be under 5MB.');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('profilePhoto', file);
+      const res = await uploadProfilePhoto(formData);
+      setProfile((prev) => ({ ...prev, profilePhoto: res.data.profilePhoto }));
+      setUser((prev) => ({ ...prev, profilePhoto: res.data.profilePhoto }));
+      toast.success('Profile photo updated!');
+    } catch {
+      toast.error('Failed to upload photo.');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const displayProfile = profile || user;
+  const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
   if (loading) {
     return (
@@ -56,10 +90,42 @@ const ProfilePage = () => {
 
       {/* Profile body */}
       <div className="relative bg-white dark:bg-surface-900 rounded-b-2xl sm:rounded-b-3xl shadow-xl border border-t-0 border-surface-200 dark:border-surface-800 px-6 sm:px-8 pb-8">
-        {/* Avatar overlap */}
+        {/* Avatar overlap with photo upload */}
         <div className="flex justify-center -mt-14 sm:-mt-16 mb-4">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-primary-400 to-purple-500 flex items-center justify-center text-white text-4xl sm:text-5xl font-bold ring-4 ring-white dark:ring-surface-900 shadow-xl">
-            {displayProfile?.name?.charAt(0)?.toUpperCase() || 'U'}
+          <div className="relative group">
+            {displayProfile?.profilePhoto ? (
+              <img
+                src={`${API_BASE}${displayProfile.profilePhoto}`}
+                alt="Profile"
+                className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover ring-4 ring-white dark:ring-surface-900 shadow-xl"
+              />
+            ) : (
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-primary-400 to-purple-500 flex items-center justify-center text-white text-4xl sm:text-5xl font-bold ring-4 ring-white dark:ring-surface-900 shadow-xl">
+                {displayProfile?.name?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+            )}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="absolute bottom-0 right-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary-600 hover:bg-primary-700 text-white flex items-center justify-center shadow-lg ring-2 ring-white dark:ring-surface-900 transition-colors disabled:opacity-50"
+              title="Change profile photo"
+            >
+              {uploading ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              )}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handlePhotoUpload}
+              className="hidden"
+            />
           </div>
         </div>
 
@@ -105,15 +171,6 @@ const ProfilePage = () => {
             }
             label={t('profile.voterId')}
             value={displayProfile?.voterId}
-          />
-          <InfoCard
-            icon={
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
-              </svg>
-            }
-            label={t('profile.fingerprintId')}
-            value={displayProfile?.fingerprintId}
           />
           <InfoCard
             icon={

@@ -8,6 +8,7 @@ const Sidebar = ({ open, onClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
   const adminLinks = [
     { to: '/admin', icon: '📊', label: t('nav.dashboard'), end: true },
@@ -108,9 +109,17 @@ const Sidebar = ({ open, onClose }) => {
             onClick={() => { onClose(); navigate('/profile'); }}
             className="w-full flex items-center gap-3 p-1 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
           >
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
-              {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-            </div>
+            {user?.profilePhoto ? (
+              <img
+                src={`${API_BASE}${user.profilePhoto}`}
+                alt="Profile"
+                className="w-9 h-9 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
+                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+            )}
             <div className="flex-1 min-w-0 text-left">
               <p className="text-sm font-semibold text-surface-900 dark:text-white truncate">
                 {user?.name}

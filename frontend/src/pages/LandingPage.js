@@ -12,203 +12,192 @@ const LandingPage = () => {
   const ctaLink = dashboardPath || '/register';
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-surface-950 overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-surface-50 text-surface-900 overflow-hidden">
 
-      {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/70 dark:bg-surface-950/70 border-b border-surface-100/80 dark:border-surface-800/40">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 h-16">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-600 via-primary-500 to-purple-500 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-primary-500/30 group-hover:shadow-primary-500/50 transition-shadow">V</div>
-            <span className="text-xl font-black text-surface-900 dark:text-white tracking-tight">{t('brand')}</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            {user ? (
-              <Link to={dashboardPath} className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white text-sm font-bold transition-all shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 hover:-translate-y-0.5">
-                {t('landing.goToDashboard')}
-              </Link>
-            ) : (
-              <>
-                <Link to="/login" className="px-5 py-2.5 rounded-xl text-surface-600 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400 text-sm font-bold transition-colors">
-                  {t('landing.login')}
-                </Link>
-                <Link to="/register" className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white text-sm font-bold transition-all shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 hover:-translate-y-0.5">
-                  {t('landing.register')}
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
-
-      {/* ── Hero ── */}
-      <section className="relative flex-1 flex items-center justify-center">
-        {/* Animated background blobs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-gradient-to-br from-primary-400/20 to-purple-400/20 dark:from-primary-600/10 dark:to-purple-600/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute -bottom-40 -left-40 w-[400px] h-[400px] bg-gradient-to-tr from-emerald-400/15 to-primary-400/15 dark:from-emerald-600/8 dark:to-primary-600/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary-300/10 to-purple-300/10 dark:from-primary-700/5 dark:to-purple-700/5 rounded-full blur-3xl" />
-        </div>
-
-        <div className="relative w-full max-w-5xl mx-auto px-6 py-20 lg:py-28 text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-50 dark:bg-primary-950/50 border border-primary-200/60 dark:border-primary-800/40 mb-8">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs font-bold text-primary-700 dark:text-primary-300 tracking-wide uppercase">{t('landing.badge')}</span>
-          </div>
-
-          {/* Main heading */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.05] text-surface-900 dark:text-white tracking-tight mb-6">
-            {t('landing.heroTitle1')}{' '}
-            <span className="relative">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-purple-500 to-primary-600">{t('landing.heroTitle2')}</span>
-              <span className="absolute -bottom-2 left-0 right-0 h-3 bg-gradient-to-r from-primary-600/20 to-purple-500/20 blur-sm rounded-full" />
+      {/* Navbar */}
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-surface-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-xs font-extrabold text-white">
+              V
+            </div>
+            <span className="hidden sm:inline text-sm font-semibold tracking-tight text-surface-800">
+              {t('brandShort')}
             </span>
-            <br className="hidden sm:block" />
-            {t('landing.heroTitle3')}
-          </h1>
+          </Link>
 
-          <p className="text-lg sm:text-xl text-surface-500 dark:text-surface-400 max-w-2xl mx-auto leading-relaxed mb-10">
-            {t('landing.heroDesc')}
-          </p>
-
-          {/* CTA buttons */}
-          <div className="flex flex-wrap items-center gap-4 justify-center mb-14">
+          <nav className="flex items-center gap-2">
+            {!user && (
+              <Link
+                to="/login"
+                className="px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm text-surface-500 hover:text-surface-900 border border-transparent hover:border-surface-300 transition-colors"
+              >
+                {t('landing.login')}
+              </Link>
+            )}
             <Link
               to={ctaLink}
-              className="group px-8 py-4 rounded-2xl bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white font-bold text-base shadow-xl shadow-primary-600/25 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary-600/30"
+              className="px-4 sm:px-5 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-emerald-500 hover:bg-emerald-600 text-white transition-colors"
             >
-              {t('landing.getStarted')}
-              <span className="inline-block ml-2 transition-transform group-hover:translate-x-1">→</span>
+              {user ? t('landing.goToDashboard') : t('landing.getStarted')}
             </Link>
-            <Link
-              to="/login"
-              className="px-8 py-4 rounded-2xl bg-white/80 dark:bg-surface-800/80 backdrop-blur border border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-200 font-bold text-base hover:border-primary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all hover:-translate-y-1 shadow-lg shadow-surface-900/5"
-            >
-              {t('landing.login')}
-            </Link>
-          </div>
-
-          {/* Stats row */}
-          <div className="inline-flex items-center gap-8 sm:gap-12 px-8 py-5 rounded-2xl bg-white/60 dark:bg-surface-800/40 backdrop-blur-lg border border-surface-200/60 dark:border-surface-700/40 shadow-xl shadow-surface-900/5">
-            {[
-              { icon: '🛡️', value: '100%', label: t('landing.statSecure') },
-              { icon: '🔑', value: '2FA', label: t('landing.statAuth') },
-              { icon: '🌐', value: '3+', label: t('landing.statLanguages') },
-            ].map((s, i) => (
-              <React.Fragment key={i}>
-                {i > 0 && <div className="w-px h-10 bg-surface-200 dark:bg-surface-700" />}
-                <div className="text-center">
-                  <div className="text-2xl mb-1">{s.icon}</div>
-                  <p className="text-2xl font-black text-surface-900 dark:text-white">{s.value}</p>
-                  <p className="text-xs font-semibold text-surface-400 dark:text-surface-500 uppercase tracking-wider">{s.label}</p>
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
+          </nav>
         </div>
-      </section>
+      </header>
 
-      {/* ── How it works ── */}
-      <section className="relative bg-surface-50/80 dark:bg-surface-900/50">
-        <div className="max-w-7xl mx-auto px-6 py-20">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-black text-surface-900 dark:text-white tracking-tight">
-              {t('landing.howItWorks')}
-            </h2>
+      {/* Hero */}
+      <main className="flex-1">
+        <section className="relative">
+          {/* Background */}
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute -top-24 right-[-6rem] w-72 h-72 bg-emerald-400/15 blur-3xl" />
+            <div className="absolute bottom-[-6rem] left-[-4rem] w-80 h-80 bg-cyan-400/15 blur-3xl" />
+            <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.5) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
           </div>
-          <div className="grid sm:grid-cols-3 lg:grid-cols-5 gap-6">
-            {[
-              { step: '01', icon: '👤', label: t('landing.step1'), color: 'from-primary-500 to-primary-600' },
-              { step: '02', icon: '📧', label: t('landing.step2'), color: 'from-purple-500 to-purple-600' },
-              { step: '03', icon: '🔐', label: t('landing.step3'), color: 'from-emerald-500 to-emerald-600' },
-              { step: '04', icon: '🗳️', label: t('landing.step4'), color: 'from-amber-500 to-amber-600' },
-              { step: '05', icon: '📄', label: t('landing.step5'), color: 'from-rose-500 to-rose-600' },
-            ].map((item, i) => (
-              <div key={i} className="group relative">
-                <div className="relative bg-white dark:bg-surface-800 rounded-2xl p-6 text-center border border-surface-100 dark:border-surface-700/50 shadow-lg shadow-surface-900/5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                  <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${item.color} text-2xl mb-4 shadow-lg`}>
-                    {item.icon}
-                  </div>
-                  <div className="text-[10px] font-black text-surface-300 dark:text-surface-600 tracking-widest uppercase mb-2">Step {item.step}</div>
-                  <p className="text-sm font-bold text-surface-800 dark:text-surface-200">{item.label}</p>
+
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-24">
+            <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+              {/* Left: text */}
+              <div className="space-y-6 text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/80 border border-surface-200 text-[10px] font-semibold uppercase tracking-[0.18em] text-surface-500 shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>{t('landing.badge')}</span>
                 </div>
-                {i < 4 && (
-                  <div className="hidden lg:flex absolute top-1/2 -right-3 -translate-y-1/2 text-surface-300 dark:text-surface-600 z-10">
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-                  </div>
-                )}
+
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight leading-tight text-surface-900">
+                  {t('landing.heroTitle1')}{' '}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-300 to-emerald-300">
+                    {t('landing.heroTitle2')}
+                  </span>
+                  <br className="hidden sm:block" />
+                  {t('landing.heroTitle3')}
+                </h1>
+
+                <p className="text-sm sm:text-base text-surface-500 max-w-xl mx-auto lg:mx-0">
+                  Secure biometric voting with fingerprint, live photo and receipt-based verification.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
+                  <Link
+                    to={ctaLink}
+                    className="inline-flex items-center justify-center px-6 sm:px-7 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold shadow-lg shadow-emerald-500/30 transition-transform hover:-translate-y-0.5"
+                  >
+                    {user ? t('landing.goToDashboard') : t('landing.getStarted')}
+                    <span className="ml-2">→</span>
+                  </Link>
+                  {!user && (
+                    <Link
+                      to="/login"
+                      className="inline-flex items-center justify-center px-6 sm:px-7 py-2.5 rounded-full border border-surface-300 text-sm text-surface-600 hover:text-surface-900 hover:border-surface-500 bg-white/60 transition-colors"
+                    >
+                      {t('landing.login')}
+                    </Link>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-3 justify-center lg:justify-start pt-2">
+                  {[ 'Biometric auth', 'Real-time results', 'Vote receipt' ].map((label) => (
+                    <span
+                      key={label}
+                      className="px-3 py-1 rounded-full bg-white/80 border border-surface-200 text-[11px] text-surface-500"
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* ── Features ── */}
-      <section className="relative">
-        <div className="max-w-7xl mx-auto px-6 py-20">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-black text-surface-900 dark:text-white tracking-tight mb-3">
-              {t('landing.featuresTitle')}
-            </h2>
-            <p className="text-base text-surface-400 dark:text-surface-500 max-w-lg mx-auto">{t('landing.featuresDesc')}</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { icon: '🔐', title: t('landing.feature1Title'), desc: t('landing.feature1Desc'), gradient: 'from-primary-500/10 to-primary-600/5', border: 'hover:border-primary-300 dark:hover:border-primary-700' },
-              { icon: '📧', title: t('landing.feature2Title'), desc: t('landing.feature2Desc'), gradient: 'from-purple-500/10 to-purple-600/5', border: 'hover:border-purple-300 dark:hover:border-purple-700' },
-              { icon: '📊', title: t('landing.feature4Title'), desc: t('landing.feature4Desc'), gradient: 'from-emerald-500/10 to-emerald-600/5', border: 'hover:border-emerald-300 dark:hover:border-emerald-700' },
-            ].map((f, i) => (
-              <div key={i} className={`group relative bg-white dark:bg-surface-800/80 rounded-2xl p-8 border border-surface-100 dark:border-surface-700/50 ${f.border} shadow-lg shadow-surface-900/5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}>
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${f.gradient} dark:from-surface-700/50 dark:to-surface-800/50 flex items-center justify-center text-3xl mb-5 group-hover:scale-110 transition-transform`}>
-                  {f.icon}
+              {/* Right: illustration */}
+              <div className="flex justify-center lg:justify-end">
+                <div className="w-full max-w-sm space-y-4">
+                  {/* Main glass card */}
+                  <div className="rounded-3xl bg-white shadow-xl border border-surface-200 p-5 sm:p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <p className="text-xs text-surface-500 mb-1">Live election</p>
+                        <p className="text-sm font-semibold text-surface-900">Smart Voting 2026</p>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-[11px] font-semibold text-emerald-600 border border-emerald-100">
+                        ● Secure
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      {[
+                        { label: 'Identity verified', value: '100%', color: 'bg-emerald-500' },
+                        { label: 'Votes cast', value: '76%', color: 'bg-cyan-500' },
+                        { label: 'Turnout', value: '65%', color: 'bg-amber-400' },
+                      ].map((item) => (
+                        <div key={item.label} className="space-y-1">
+                          <div className="flex items-center justify-between text-[11px] text-surface-500">
+                            <span>{item.label}</span>
+                            <span className="text-surface-800 font-semibold">{item.value}</span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-surface-100 overflow-hidden">
+                            <div className={`${item.color} h-full rounded-full w-4/5`} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Steps card */}
+                  <div className="rounded-3xl bg-white border border-surface-200 p-4 grid grid-cols-3 gap-2 text-center text-[11px]">
+                    {[
+                      { icon: '👤', label: 'Register' },
+                      { icon: '📸', label: 'Verify' },
+                      { icon: '🗳️', label: 'Vote' },
+                    ].map((step) => (
+                      <div key={step.label} className="flex flex-col items-center gap-1">
+                        <span className="w-7 h-7 rounded-xl bg-surface-100 flex items-center justify-center">
+                          {step.icon}
+                        </span>
+                        <span className="text-surface-600">{step.label}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <h3 className="text-lg font-bold text-surface-900 dark:text-white mb-2">{f.title}</h3>
-                <p className="text-sm text-surface-500 dark:text-surface-400 leading-relaxed">{f.desc}</p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA Banner ── */}
-      <section className="relative">
-        <div className="max-w-7xl mx-auto px-6 pb-20">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-600 via-primary-700 to-purple-700 p-12 sm:p-16 text-center">
-            {/* Decorative circles */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
-            <div className="absolute top-1/2 left-1/4 w-3 h-3 bg-white/20 rounded-full" />
-            <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-white/20 rounded-full" />
-
-            <div className="relative">
-              <div className="text-6xl mb-6">🗳️</div>
-              <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
-                {t('landing.everyVoteTitle')}
-              </h2>
-              <p className="text-base sm:text-lg text-primary-100 max-w-xl mx-auto mb-8 leading-relaxed">
-                {t('landing.everyVoteDesc')}
-              </p>
-              <Link
-                to={ctaLink}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-white text-primary-700 font-bold text-base shadow-xl shadow-black/10 hover:-translate-y-1 hover:shadow-2xl transition-all"
-              >
-                {t('landing.getStarted')}
-                <span className="text-lg">→</span>
-              </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── Footer ── */}
-      <NoticePopup />
-      <footer className="border-t border-surface-100 dark:border-surface-800/60 bg-surface-50/50 dark:bg-surface-900/30">
-        <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-600 to-purple-600 flex items-center justify-center text-white text-xs font-black shadow-md">V</div>
-            <span className="text-sm font-bold text-surface-600 dark:text-surface-400">{t('brand')}</span>
+        {/* Compact features strip */}
+        <section className="border-t border-surface-200 bg-white/80">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-wrap items-center justify-between gap-4">
+            <p className="text-xs sm:text-sm text-surface-500">
+              {t('landing.featuresTitle')}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                'Fingerprint + photo verification',
+                'Activity logs for every vote',
+                'Downloadable vote receipt',
+                'Multi-language interface',
+              ].map((text) => (
+                <span
+                  key={text}
+                  className="px-3 py-1 rounded-full bg-white border border-surface-200 text-[11px] text-surface-500"
+                >
+                  {text}
+                </span>
+              ))}
+            </div>
           </div>
-          <p className="text-xs text-surface-400 dark:text-surface-500">© 2026 {t('brand')}. {t('landing.copyright')}</p>
+        </section>
+
+      </main>
+
+      {/* Footer + notices */}
+      <NoticePopup />
+      <footer className="border-t border-surface-200 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <span className="text-xs text-surface-500">
+            © 2026 {t('brand')}. {t('landing.copyright')}
+          </span>
+          <span className="text-xs text-surface-400">
+            Built for secure campus & organizational elections.
+          </span>
         </div>
       </footer>
     </div>

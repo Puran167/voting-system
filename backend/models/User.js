@@ -9,8 +9,7 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Email is required'],
-    unique: true,
+    default: null,
     lowercase: true,
     trim: true
   },
@@ -22,19 +21,21 @@ const userSchema = new mongoose.Schema({
   },
   fingerprintId: {
     type: String,
-    required: [true, 'Fingerprint ID is required'],
-    unique: true,
+    default: null,
     trim: true
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
-    minlength: 6
+    default: null
   },
   role: {
     type: String,
     enum: ['admin', 'voter'],
     default: 'voter'
+  },
+  registered: {
+    type: Boolean,
+    default: false
   },
   hasVoted: {
     type: Boolean,
@@ -47,12 +48,20 @@ const userSchema = new mongoose.Schema({
   capturedPhoto: {
     type: String,
     default: ''
+  },
+  profilePhoto: {
+    type: String,
+    default: ''
   }
 }, { timestamps: true });
 
+// Sparse unique indexes: allow multiple nulls but enforce uniqueness for non-null values
+userSchema.index({ email: 1 }, { unique: true, sparse: true });
+userSchema.index({ fingerprintId: 1 }, { unique: true, sparse: true });
+
 // Hash password before saving
 userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password') || !this.password) return next();
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
   next();
@@ -60,6 +69,7 @@ userSchema.pre('save', async function(next) {
 
 // Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
+  if (!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
 };
 

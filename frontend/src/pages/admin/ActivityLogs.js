@@ -1,25 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getVoteLogs } from '../../services/api';
+import { toast } from 'react-toastify';
+import { getVoteLogs, deleteVoteLog, clearAllVoteLogs } from '../../services/api';
 
 const ActivityLogs = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
 
-  useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const res = await getVoteLogs();
-        setLogs(res.data);
-      } catch {
-        // Error loading logs
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLogs();
-  }, []);
+  const fetchLogs = async () => {
+    try {
+      const res = await getVoteLogs();
+      setLogs(res.data);
+    } catch {
+      // Error loading logs
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchLogs(); }, []);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this log entry?')) return;
+    try {
+      await deleteVoteLog(id);
+      toast.success('Log entry deleted.');
+      fetchLogs();
+    } catch {
+      toast.error('Failed to delete log entry.');
+    }
+  };
+
+  const handleClearAll = async () => {
+    if (!window.confirm('Are you sure you want to delete ALL activity logs? This cannot be undone.')) return;
+    try {
+      await clearAllVoteLogs();
+      toast.success('All logs cleared.');
+      setLogs([]);
+    } catch {
+      toast.error('Failed to clear logs.');
+    }
+  };
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
@@ -32,9 +54,19 @@ const ActivityLogs = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-surface-900 dark:text-white">{t('admin.activityLogs')}</h1>
-        <p className="text-surface-500 dark:text-surface-400 text-sm mt-1">{t('admin.votingHistory', { count: logs.length })}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-surface-900 dark:text-white">{t('admin.activityLogs')}</h1>
+          <p className="text-surface-500 dark:text-surface-400 text-sm mt-1">{t('admin.votingHistory', { count: logs.length })}</p>
+        </div>
+        {logs.length > 0 && (
+          <button
+            onClick={handleClearAll}
+            className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-500/30 transition-colors"
+          >
+            🗑️ Clear All Logs
+          </button>
+        )}
       </div>
 
       <div className="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 overflow-hidden">
@@ -49,12 +81,13 @@ const ActivityLogs = () => {
                 <th className="text-left px-6 py-4 font-semibold text-surface-500 dark:text-surface-400 uppercase text-xs tracking-wider">{t('admin.party')}</th>
                 <th className="text-left px-6 py-4 font-semibold text-surface-500 dark:text-surface-400 uppercase text-xs tracking-wider">{t('admin.photo')}</th>
                 <th className="text-left px-6 py-4 font-semibold text-surface-500 dark:text-surface-400 uppercase text-xs tracking-wider">{t('admin.timestamp')}</th>
+                <th className="text-left px-6 py-4 font-semibold text-surface-500 dark:text-surface-400 uppercase text-xs tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface-100 dark:divide-surface-800">
               {logs.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="px-6 py-12 text-center text-surface-400 dark:text-surface-500">
+                  <td colSpan="8" className="px-6 py-12 text-center text-surface-400 dark:text-surface-500">
                     <div className="text-4xl mb-2">📋</div>
                     No voting activity recorded yet.
                   </td>
@@ -75,6 +108,11 @@ const ActivityLogs = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 text-surface-500 dark:text-surface-400 text-xs">{new Date(log.timestamp).toLocaleString()}</td>
+                    <td className="px-6 py-4">
+                      <button onClick={() => handleDelete(log._id)} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors">
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))
               )}

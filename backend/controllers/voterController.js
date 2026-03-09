@@ -11,7 +11,7 @@ exports.getAllVoters = async (req, res) => {
   }
 };
 
-// Add a new voter (admin only)
+// Admin pre-registers an eligible voter (only voterId + name)
 exports.addVoter = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -19,16 +19,21 @@ exports.addVoter = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, voterId, fingerprintId, password } = req.body;
+    const { name, voterId } = req.body;
 
-    const existingUser = await User.findOne({
-      $or: [{ email }, { voterId }, { fingerprintId }]
-    });
+    // Check if voterId already exists
+    const existingUser = await User.findOne({ voterId });
     if (existingUser) {
-      return res.status(400).json({ message: 'User with this email, voter ID, or fingerprint ID already exists.' });
+      return res.status(400).json({ message: 'A voter with this Voter ID already exists.' });
     }
 
-    const voter = new User({ name, email, voterId, fingerprintId, password, role: 'voter' });
+    // Create pre-approved voter entry (not yet registered)
+    const voter = new User({
+      name,
+      voterId,
+      role: 'voter',
+      registered: false
+    });
     await voter.save();
 
     const voterData = voter.toObject();

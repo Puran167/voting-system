@@ -62,14 +62,14 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-1.5">
-                {t('login.voterId')}
+                Voter ID or Email
               </label>
               <input
                 type="text"
                 name="voterId"
                 value={formData.voterId}
                 onChange={handleChange}
-                placeholder={t('login.voterIdPlaceholder')}
+                placeholder="Enter your Voter ID or Email"
                 required
                 className="w-full px-4 py-3 rounded-xl border border-surface-300 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-900 dark:text-white placeholder-surface-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
               />

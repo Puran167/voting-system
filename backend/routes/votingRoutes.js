@@ -28,6 +28,12 @@ router.get('/settings', auth, votingController.getVotingSettings);
 // GET /api/voting/logs - Get vote logs (admin only)
 router.get('/logs', auth, adminOnly, votingController.getVoteLogs);
 
+// DELETE /api/voting/logs/:id - Delete a single vote log (admin only)
+router.delete('/logs/:id', auth, adminOnly, votingController.deleteVoteLog);
+
+// DELETE /api/voting/logs - Clear all vote logs (admin only)
+router.delete('/logs', auth, adminOnly, votingController.clearAllVoteLogs);
+
 // GET /api/voting/verify/:verificationId - Verify a vote (public, no candidate reveal)
 router.get('/verify/:verificationId', votingController.verifyVote);
 

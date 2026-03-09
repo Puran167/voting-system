@@ -7,13 +7,10 @@ const { auth, adminOnly } = require('../middleware/auth');
 // GET /api/voters - Get all voters (admin only)
 router.get('/', auth, adminOnly, voterController.getAllVoters);
 
-// POST /api/voters - Add a new voter (admin only)
+// POST /api/voters - Pre-register a voter (admin only, voterId + name only)
 router.post('/', auth, adminOnly, [
   body('name').trim().notEmpty().withMessage('Name is required'),
-  body('email').isEmail().withMessage('Valid email is required'),
-  body('voterId').trim().notEmpty().withMessage('Voter ID is required'),
-  body('fingerprintId').trim().notEmpty().withMessage('Fingerprint ID is required'),
-  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+  body('voterId').trim().notEmpty().withMessage('Voter ID is required')
 ], voterController.addVoter);
 
 // DELETE /api/voters/:id - Delete a voter (admin only)

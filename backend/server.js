@@ -89,10 +89,16 @@ io.on("connection", (socket) => {
 // ===== DATABASE CONNECTION =====
 const PORT = process.env.PORT || 5000;
 
+const User = require("./models/User");
+
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => {
+  .then(async () => {
     console.log("MongoDB connected");
+
+    // Sync indexes: drops old indexes and creates new ones from schema
+    await User.syncIndexes();
+    console.log("User indexes synced");
 
     server.listen(PORT, "0.0.0.0", () => {
       console.log(`Server running on port ${PORT}`);

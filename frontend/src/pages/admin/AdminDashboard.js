@@ -7,7 +7,7 @@ import { SkeletonCard } from '../../components/ui/Skeleton';
 import Badge from '../../components/ui/Badge';
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState({ voters: 0, candidates: 0, voted: 0, votingActive: false });
+  const [stats, setStats] = useState({ voters: 0, registered: 0, candidates: 0, voted: 0, votingActive: false });
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
 
@@ -26,6 +26,7 @@ const AdminDashboard = () => {
 
         setStats({
           voters: votersRes.data.length,
+          registered: votersRes.data.filter((v) => v.registered).length,
           candidates: candidatesRes.data.length,
           voted: votersRes.data.filter((v) => v.hasVoted).length,
           votingActive: active
@@ -52,7 +53,7 @@ const AdminDashboard = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          <StatCard icon="👥" label={t('admin.totalVoters')} value={stats.voters} color="primary" />
+          <StatCard icon="👥" label={t('admin.totalVoters')} value={`${stats.registered}/${stats.voters}`} color="primary" />
           <StatCard icon="🏆" label={t('admin.candidates')} value={stats.candidates} color="purple" />
           <StatCard icon="🗳️" label={t('admin.votesCast')} value={stats.voted} color="green" />
           <StatCard icon="⏰" label={t('admin.votingStatus')} value={stats.votingActive ? t('admin.active') : t('admin.inactive')} color={stats.votingActive ? 'green' : 'orange'} />
@@ -86,7 +87,7 @@ const AdminDashboard = () => {
             <Badge variant={stats.votingActive ? 'success' : 'warning'}>
               {stats.votingActive ? '● ' + t('admin.votingActive') : '● ' + t('admin.votingInactive')}
             </Badge>
-            <Badge variant="info">{t('admin.registeredVoters', { count: stats.voters })}</Badge>
+            <Badge variant="info">{t('admin.registeredVoters', { count: stats.voters })} ({stats.registered} registered)</Badge>
             <Badge variant="primary">{t('admin.candidatesCount', { count: stats.candidates })}</Badge>
             <Badge variant={stats.voted > 0 ? 'success' : 'default'}>
               {t('admin.votesCastCount', { count: stats.voted })}
