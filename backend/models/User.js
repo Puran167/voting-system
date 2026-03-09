@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    default: null,
     lowercase: true,
     trim: true
   },
@@ -21,12 +20,10 @@ const userSchema = new mongoose.Schema({
   },
   fingerprintId: {
     type: String,
-    default: null,
     trim: true
   },
   password: {
-    type: String,
-    default: null
+    type: String
   },
   role: {
     type: String,

@@ -101,6 +101,11 @@ mongoose
     // Drop old non-sparse indexes and sync with schema
     try {
       const collection = mongoose.connection.collection("users");
+      
+      // Convert null email/fingerprintId to unset so sparse index works
+      await collection.updateMany({ email: null }, { $unset: { email: "" } });
+      await collection.updateMany({ fingerprintId: null }, { $unset: { fingerprintId: "" } });
+      
       const indexes = await collection.indexes();
       for (const idx of indexes) {
         // Drop old non-sparse unique indexes on email or fingerprintId
