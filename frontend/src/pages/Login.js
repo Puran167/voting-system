@@ -29,7 +29,13 @@ const Login = () => {
       // Redirect based on role
       navigate(res.data.user.role === 'admin' ? '/admin' : '/voter/verify');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err.request) {
+        setError('Cannot reach server. Please check your connection.');
+      } else {
+        setError('Login failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

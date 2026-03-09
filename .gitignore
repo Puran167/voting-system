@@ -8,7 +8,7 @@ backend/.env
 .env
 
 # Build output
-frontend/build/
+# frontend/build/ — tracked so Render can serve it directly
 
 # IDE
 .vscode/
