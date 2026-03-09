@@ -3,6 +3,8 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { getCandidates, addCandidate, deleteCandidate } from '../../services/api';
 
+const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || (window.location.hostname !== 'localhost' ? 'https://voting-system-backend-b9y7.onrender.com' : 'http://localhost:5000');
+
 const ManageCandidates = () => {
   const [candidates, setCandidates] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -120,7 +122,7 @@ const ManageCandidates = () => {
             <div key={c._id} className="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 overflow-hidden hover:shadow-lg transition-shadow">
               <div className="aspect-square bg-white dark:bg-surface-800 flex items-center justify-center p-3 border-b border-surface-200 dark:border-surface-800">
                 {c.photo ? (
-                  <img src={`http://localhost:5000${c.photo}`} alt={c.name} className="w-full h-full object-contain rounded-xl" />
+                  <img src={`${API_BASE}${c.photo}`} alt={c.name} className="w-full h-full object-contain rounded-xl" />
                 ) : (
                   <div className="w-full h-full rounded-xl bg-gradient-to-br from-primary-100 to-purple-100 dark:from-primary-500/20 dark:to-purple-500/20 flex items-center justify-center">
                     <span className="text-6xl">👤</span>

@@ -1,10 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || (window.location.hostname !== 'localhost' ? 'https://voting-system-backend-b9y7.onrender.com' : 'http://localhost:5000');
+
 const CandidateCard = ({ candidate, onSelect, selectable, showVotes, disabled }) => {
   const { t } = useTranslation();
   const photoUrl = candidate.photo
-    ? `http://localhost:5000${candidate.photo}`
+    ? `${API_BASE}${candidate.photo}`
     : null;
 
   return (

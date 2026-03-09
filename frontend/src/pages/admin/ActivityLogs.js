@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { getVoteLogs, deleteVoteLog, clearAllVoteLogs } from '../../services/api';
 
+const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || (window.location.hostname !== 'localhost' ? 'https://voting-system-backend-b9y7.onrender.com' : 'http://localhost:5000');
+
 const ActivityLogs = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -102,7 +104,7 @@ const ActivityLogs = () => {
                     <td className="px-6 py-4 text-surface-600 dark:text-surface-400">{log.candidateId?.party || 'N/A'}</td>
                     <td className="px-6 py-4">
                       {log.photo ? (
-                        <img src={`http://localhost:5000${log.photo}`} alt="Voter" className="w-10 h-10 rounded-lg object-cover border border-surface-200 dark:border-surface-700" />
+                        <img src={`${API_BASE}${log.photo}`} alt="Voter" className="w-10 h-10 rounded-lg object-cover border border-surface-200 dark:border-surface-700" />
                       ) : (
                         <span className="text-xs text-surface-400">{t('admin.noPhoto')}</span>
                       )}
